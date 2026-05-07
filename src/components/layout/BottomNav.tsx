@@ -18,10 +18,10 @@ export default function BottomNav() {
   return (
     <>
       {/* Spacer so content is never hidden behind the nav — only on mobile */}
-      <div className="lg:hidden" style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px))' }} />
+      <div className="block lg:hidden" style={{ height: 'calc(64px + env(safe-area-inset-bottom, 0px))' }} />
 
       <nav
-        className="lg:hidden"
+        className="flex lg:hidden"
         style={{
           position: 'fixed',
           bottom: 0,

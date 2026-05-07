@@ -1,10 +1,32 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { Check, Eye, EyeOff, Dumbbell } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Check, Eye, EyeOff, Dumbbell, User, Users, ShieldCheck, AlertCircle } from 'lucide-react';
+import { useAuthStore, type UserRole } from '@/stores/useAuthStore';
 
 type AuthMode = 'signin' | 'signup';
+
+const ROLE_CONFIG: Record<UserRole, {
+  label: string; icon: typeof User; color: string; bg: string;
+  email: string; password: string; redirect: string; hint: string;
+}> = {
+  user: {
+    label: 'User', icon: User, color: '#22C55E', bg: 'rgba(34,197,94,0.1)',
+    email: 'demo@vitaelite.com', password: 'Demo@123',
+    redirect: '/dashboard', hint: 'Track nutrition, book coaches, analyse meals',
+  },
+  coach: {
+    label: 'Coach', icon: Users, color: '#3B82F6', bg: 'rgba(59,130,246,0.1)',
+    email: 'coach@vitaelite.com', password: 'Coach@123',
+    redirect: '/coach/dashboard', hint: 'Manage bookings, clients & your profile',
+  },
+  admin: {
+    label: 'Admin', icon: ShieldCheck, color: '#F59E0B', bg: 'rgba(245,158,11,0.1)',
+    email: 'admin@vitaelite.com', password: 'Admin@123',
+    redirect: '/admin/dashboard', hint: 'Oversee platform, users & coaches',
+  },
+};
 
 function getPasswordStrength(pw: string): { score: number; label: string; color: string } {
   let score = 0;
@@ -12,331 +34,200 @@ function getPasswordStrength(pw: string): { score: number; label: string; color:
   if (/[A-Z]/.test(pw)) score++;
   if (/[0-9]/.test(pw)) score++;
   if (/[^A-Za-z0-9]/.test(pw)) score++;
-  const map = [
+  return [
     { label: '', color: '#2E2E2E' },
     { label: 'Weak', color: '#EF4444' },
     { label: 'Fair', color: '#F97316' },
     { label: 'Good', color: '#F5C518' },
     { label: 'Strong', color: '#22C55E' },
-  ];
-  return { score, ...map[score] };
+  ][score] as { label: string; color: string } & { score: number };
 }
 
 export default function LoginPage() {
+  const router = useRouter();
+  const login = useAuthStore(s => s.login);
+
   const [mode, setMode] = useState<AuthMode>('signin');
+  const [activeRole, setActiveRole] = useState<UserRole>('user');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
+  const [authError, setAuthError] = useState('');
+  const [form, setForm] = useState({ firstName: '', lastName: '', email: '', password: '', confirmPassword: '' });
 
+  const cfg = ROLE_CONFIG[activeRole];
   const pwStrength = getPasswordStrength(form.password);
 
-  const valueProps = [
-    'Access 30+ certified coaches at home',
-    'AI-powered calorie & nutrition tracker',
-    'BMI & body measurement tools — free',
-  ];
+  const handleSignIn = () => {
+    setAuthError('');
+    const result = login(form.email, form.password);
+    if (!result.success) { setAuthError(result.error ?? 'Login failed.'); return; }
+    router.push(ROLE_CONFIG[result.role!].redirect);
+  };
+
+  const handleQuickDemo = () => {
+    const result = login(cfg.email, cfg.password);
+    if (result.success) router.push(cfg.redirect);
+  };
+
+  const handleSignUp = () => {
+    router.push('/onboarding');
+  };
 
   return (
-    <div
-      style={{
-        minHeight: '100vh',
-        background: '#0A0A0A',
-        display: 'flex',
-        position: 'relative',
-        overflow: 'hidden',
-      }}
-    >
-      {/* Grid background */}
-      <div
-        style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage:
-            'linear-gradient(rgba(46,46,46,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(46,46,46,0.4) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-          opacity: 0.5,
-        }}
-      />
+    <div style={{ minHeight: '100vh', background: '#0A0A0A', display: 'flex', position: 'relative', overflow: 'hidden' }}>
+      {/* Grid bg */}
+      <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(46,46,46,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(46,46,46,0.4) 1px, transparent 1px)', backgroundSize: '48px 48px', opacity: 0.5, pointerEvents: 'none' }} />
 
-      {/* Left hero — desktop only */}
-      <div
-        className="hidden lg:flex"
-        style={{
-          flex: 1,
-          flexDirection: 'column',
-          justifyContent: 'center',
-          padding: '64px 72px',
-          position: 'relative',
-        }}
-      >
-        {/* Logo */}
+      {/* Left hero */}
+      <div className="hidden lg:flex" style={{ flex: 1, flexDirection: 'column', justifyContent: 'center', padding: '64px 72px', position: 'relative' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 48 }}>
-          <div
-            style={{
-              width: 52,
-              height: 52,
-              borderRadius: 14,
-              background: 'rgba(34,197,94,0.15)',
-              border: '1px solid rgba(34,197,94,0.3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
+          <div style={{ width: 52, height: 52, borderRadius: 14, background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <Dumbbell size={24} color="#22C55E" />
           </div>
-          <div>
-            <span style={{ fontSize: 28, fontWeight: 900, color: '#FFFFFF', letterSpacing: '-1px' }}>VITA</span>
-            <span style={{ fontSize: 28, fontWeight: 900, color: '#22C55E', letterSpacing: '-1px' }}>ELITE</span>
-          </div>
+          <span style={{ fontSize: 28, fontWeight: 900, letterSpacing: '-1px' }}>
+            <span style={{ color: '#FFFFFF' }}>VITA</span><span style={{ color: '#22C55E' }}>ELITE</span>
+          </span>
         </div>
 
-        <h1
-          style={{
-            fontSize: 56,
-            fontWeight: 900,
-            color: '#FFFFFF',
-            lineHeight: 1.1,
-            letterSpacing: '-2px',
-            marginBottom: 24,
-            maxWidth: 520,
-          }}
-        >
-          Your Elite Health.
-          <br />
-          <span style={{ color: '#22C55E' }}>At Your Door.</span>
+        <h1 style={{ fontSize: 52, fontWeight: 900, color: '#FFFFFF', lineHeight: 1.1, letterSpacing: '-2px', marginBottom: 24, maxWidth: 520 }}>
+          Your Elite Health.<br /><span style={{ color: '#22C55E' }}>At Your Door.</span>
         </h1>
-
-        <p style={{ fontSize: 18, color: '#A0A0A0', marginBottom: 40, maxWidth: 440, lineHeight: 1.6 }}>
-          India&apos;s premium at-home wellness platform connecting you with the country&apos;s top coaches, dietitians, and physiotherapists.
+        <p style={{ fontSize: 17, color: '#A0A0A0', marginBottom: 40, maxWidth: 440, lineHeight: 1.6 }}>
+          India&apos;s premium at-home wellness platform connecting users with top coaches, dietitians, and physiotherapists.
         </p>
-
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-          {valueProps.map((prop, i) => (
+          {['Access 30+ certified coaches at home', 'AI-powered calorie & food analyser', 'BMI & body measurement tracker'].map((prop, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div
-                style={{
-                  width: 24,
-                  height: 24,
-                  borderRadius: '50%',
-                  background: 'rgba(34,197,94,0.15)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <Check size={14} color="#22C55E" />
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Check size={13} color="#22C55E" />
               </div>
               <span style={{ fontSize: 15, color: '#E0E0E0' }}>{prop}</span>
             </div>
           ))}
         </div>
 
-        {/* Decorative green glow */}
-        <div
-          style={{
-            position: 'absolute',
-            bottom: -100,
-            left: -100,
-            width: 400,
-            height: 400,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(34,197,94,0.12) 0%, transparent 70%)',
-            pointerEvents: 'none',
-          }}
-        />
+        {/* Role cards on hero side */}
+        <div style={{ marginTop: 48, display: 'flex', flexDirection: 'column', gap: 12 }}>
+          <p style={{ fontSize: 12, color: '#606060', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>Three portals, one platform</p>
+          {(Object.entries(ROLE_CONFIG) as [UserRole, typeof ROLE_CONFIG['user']][]).map(([role, c]) => {
+            const Icon = c.icon;
+            return (
+              <div key={role} style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                <div style={{ width: 32, height: 32, borderRadius: 8, background: c.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <Icon size={15} color={c.color} />
+                </div>
+                <div>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>{c.label} Portal</span>
+                  <span style={{ fontSize: 12, color: '#A0A0A0', marginLeft: 8 }}>{c.hint}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{ position: 'absolute', bottom: -100, left: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle, rgba(34,197,94,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
       </div>
 
       {/* Right auth card */}
-      <div
-        style={{
-          flex: '0 0 auto',
-          width: '100%',
-          maxWidth: 460,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '32px 24px',
-          position: 'relative',
-        }}
-        className="lg:max-w-[460px]"
-      >
-        <div
-          style={{
-            width: '100%',
-            maxWidth: 420,
-            background: '#1A1A1A',
-            border: '1px solid #2E2E2E',
-            borderRadius: 24,
-            padding: '40px 36px',
-          }}
-        >
+      <div style={{ flex: '0 0 auto', width: '100%', maxWidth: 480, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '32px 20px', position: 'relative' }} className="lg:max-w-[480px]">
+        <div style={{ width: '100%', maxWidth: 440, background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 24, padding: '36px 32px' }}>
+
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-3 mb-8">
             <Dumbbell size={22} color="#22C55E" />
-            <span style={{ fontSize: 22, fontWeight: 900, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
-              VITA<span style={{ color: '#22C55E' }}>ELITE</span>
-            </span>
+            <span style={{ fontSize: 22, fontWeight: 900 }}><span style={{ color: '#FFFFFF' }}>VITA</span><span style={{ color: '#22C55E' }}>ELITE</span></span>
           </div>
 
-          <h2 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF', marginBottom: 6, letterSpacing: '-0.5px' }}>
+          {/* Role selector */}
+          <div style={{ marginBottom: 28 }}>
+            <p style={{ fontSize: 12, color: '#A0A0A0', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 10 }}>Sign in as</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8 }}>
+              {(Object.entries(ROLE_CONFIG) as [UserRole, typeof ROLE_CONFIG['user']][]).map(([role, c]) => {
+                const Icon = c.icon;
+                const active = activeRole === role;
+                return (
+                  <button
+                    key={role}
+                    onClick={() => { setActiveRole(role); setAuthError(''); }}
+                    style={{
+                      padding: '12px 8px', borderRadius: 12, border: `1px solid ${active ? c.color : '#2E2E2E'}`,
+                      background: active ? c.bg : 'transparent', cursor: 'pointer',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6,
+                      transition: 'all 0.15s',
+                    }}
+                  >
+                    <Icon size={18} color={active ? c.color : '#606060'} />
+                    <span style={{ fontSize: 12, fontWeight: active ? 700 : 400, color: active ? c.color : '#A0A0A0' }}>{c.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          <h2 style={{ fontSize: 22, fontWeight: 800, color: '#FFFFFF', marginBottom: 4, letterSpacing: '-0.5px' }}>
             {mode === 'signin' ? 'Welcome back' : 'Create account'}
           </h2>
-          <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 28 }}>
-            {mode === 'signin'
-              ? 'Sign in to your Vita Elite account'
-              : 'Start your elite health journey today'}
+          <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 22 }}>
+            {mode === 'signin' ? `Sign in to your ${cfg.label} portal` : 'Start your elite health journey'}
           </p>
 
-          {/* Demo credentials hint */}
+          {/* Demo credentials */}
           {mode === 'signin' && (
-            <div
-              style={{
-                background: 'rgba(34,197,94,0.08)',
-                border: '1px solid rgba(34,197,94,0.2)',
-                borderRadius: 10,
-                padding: '10px 14px',
-                marginBottom: 20,
-                fontSize: 12,
-              }}
-            >
-              <p style={{ color: '#22C55E', fontWeight: 600, marginBottom: 4 }}>Demo Credentials</p>
-              <p style={{ color: '#A0A0A0' }}>Email: <span style={{ color: '#FFFFFF' }}>demo@vitaelite.com</span></p>
-              <p style={{ color: '#A0A0A0' }}>Password: <span style={{ color: '#FFFFFF' }}>Demo@123</span></p>
+            <div style={{ background: `${cfg.bg}`, border: `1px solid ${cfg.color}30`, borderRadius: 10, padding: '12px 14px', marginBottom: 20 }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                <p style={{ fontSize: 12, fontWeight: 700, color: cfg.color }}>Demo Credentials — {cfg.label}</p>
+                <button
+                  onClick={handleQuickDemo}
+                  style={{ fontSize: 11, color: cfg.color, background: `${cfg.color}20`, border: 'none', borderRadius: 6, padding: '3px 10px', cursor: 'pointer', fontWeight: 700 }}
+                >
+                  Auto-fill & Login →
+                </button>
+              </div>
+              <p style={{ fontSize: 12, color: '#A0A0A0' }}>Email: <span style={{ color: '#FFFFFF' }}>{cfg.email}</span></p>
+              <p style={{ fontSize: 12, color: '#A0A0A0' }}>Password: <span style={{ color: '#FFFFFF' }}>{cfg.password}</span></p>
             </div>
           )}
 
-          {/* Google button */}
-          <button
-            style={{
-              width: '100%',
-              height: 48,
-              borderRadius: 12,
-              background: '#FFFFFF',
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 10,
-              fontSize: 14,
-              fontWeight: 600,
-              color: '#1A1A1A',
-              marginBottom: 20,
-              transition: 'opacity 0.2s',
-            }}
-          >
-            <svg width="18" height="18" viewBox="0 0 48 48">
-              <path fill="#FFC107" d="M43.6 20H24v8h11.3C33.7 33.1 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20c11 0 19.3-7.7 19.3-20 0-1.4-.1-2.7-.4-4H43.6z" />
-              <path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 16 19 13 24 13c3.1 0 5.8 1.1 7.9 3l5.7-5.7C34.5 6.5 29.6 4 24 4 16.3 4 9.7 8.4 6.3 14.7z" />
-              <path fill="#4CAF50" d="M24 44c5.4 0 10.2-1.8 14-4.9l-6.5-5.3C29.5 35.6 26.9 36.6 24 36.6c-5.2 0-9.6-3-11.3-7.4l-6.5 5C9.6 40.5 16.3 44 24 44z" />
-              <path fill="#1976D2" d="M43.6 20H24v8h11.3c-.9 2.7-2.7 4.9-5 6.3l6.5 5.3C40.6 36.3 44 30.6 44 24c0-1.4-.1-2.7-.4-4z" />
-            </svg>
-            Continue with Google
-          </button>
-
-          {/* Divider */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-            <div style={{ flex: 1, height: 1, background: '#2E2E2E' }} />
-            <span style={{ fontSize: 12, color: '#A0A0A0' }}>or</span>
-            <div style={{ flex: 1, height: 1, background: '#2E2E2E' }} />
-          </div>
+          {/* Error */}
+          {authError && (
+            <div style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 10, padding: '10px 14px', marginBottom: 16, display: 'flex', gap: 8, alignItems: 'center' }}>
+              <AlertCircle size={14} color="#EF4444" />
+              <p style={{ fontSize: 13, color: '#EF4444' }}>{authError}</p>
+            </div>
+          )}
 
           {/* Form */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {mode === 'signup' && (
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>
-                    First Name
-                  </label>
-                  <input
-                    className="input-field"
-                    placeholder="Priya"
-                    value={form.firstName}
-                    onChange={(e) => setForm({ ...form, firstName: e.target.value })}
-                  />
+                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>First Name</label>
+                  <input className="input-field" placeholder="Priya" value={form.firstName} onChange={e => setForm({ ...form, firstName: e.target.value })} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>
-                    Last Name
-                  </label>
-                  <input
-                    className="input-field"
-                    placeholder="Sharma"
-                    value={form.lastName}
-                    onChange={(e) => setForm({ ...form, lastName: e.target.value })}
-                  />
+                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Last Name</label>
+                  <input className="input-field" placeholder="Sharma" value={form.lastName} onChange={e => setForm({ ...form, lastName: e.target.value })} />
                 </div>
               </div>
             )}
 
             <div>
-              <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>
-                Email address
-              </label>
-              <input
-                className="input-field"
-                type="email"
-                placeholder="priya@example.com"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-              />
+              <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Email address</label>
+              <input className="input-field" type="email" placeholder={cfg.email} value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
             </div>
 
             <div>
-              <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>
-                Password
-              </label>
+              <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Password</label>
               <div style={{ position: 'relative' }}>
-                <input
-                  className="input-field"
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="••••••••"
-                  value={form.password}
-                  onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  style={{ paddingRight: 44 }}
-                />
-                <button
-                  onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    position: 'absolute',
-                    right: 12,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    background: 'none',
-                    border: 'none',
-                    cursor: 'pointer',
-                    color: '#A0A0A0',
-                    padding: 2,
-                  }}
-                  type="button"
-                >
+                <input className="input-field" type={showPassword ? 'text' : 'password'} placeholder="••••••••" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} style={{ paddingRight: 44 }} />
+                <button onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#A0A0A0' }} type="button">
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
               {mode === 'signup' && form.password.length > 0 && (
                 <div style={{ marginTop: 8 }}>
                   <div style={{ display: 'flex', gap: 4, marginBottom: 4 }}>
-                    {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        style={{
-                          flex: 1,
-                          height: 3,
-                          borderRadius: 2,
-                          background: i <= pwStrength.score ? pwStrength.color : '#2E2E2E',
-                          transition: 'background 0.3s',
-                        }}
-                      />
-                    ))}
+                    {[1, 2, 3, 4].map(i => <div key={i} style={{ flex: 1, height: 3, borderRadius: 2, background: i <= pwStrength.score ? pwStrength.color : '#2E2E2E', transition: 'background 0.3s' }} />)}
                   </div>
                   <span style={{ fontSize: 11, color: pwStrength.color }}>{pwStrength.label}</span>
                 </div>
@@ -345,56 +236,27 @@ export default function LoginPage() {
 
             {mode === 'signup' && (
               <div>
-                <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>
-                  Confirm Password
-                </label>
+                <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Confirm Password</label>
                 <div style={{ position: 'relative' }}>
-                  <input
-                    className="input-field"
-                    type={showConfirm ? 'text' : 'password'}
-                    placeholder="••••••••"
-                    value={form.confirmPassword}
-                    onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
-                    style={{ paddingRight: 44 }}
-                  />
-                  <button
-                    onClick={() => setShowConfirm(!showConfirm)}
-                    style={{
-                      position: 'absolute',
-                      right: 12,
-                      top: '50%',
-                      transform: 'translateY(-50%)',
-                      background: 'none',
-                      border: 'none',
-                      cursor: 'pointer',
-                      color: '#A0A0A0',
-                      padding: 2,
-                    }}
-                    type="button"
-                  >
+                  <input className="input-field" type={showConfirm ? 'text' : 'password'} placeholder="••••••••" value={form.confirmPassword} onChange={e => setForm({ ...form, confirmPassword: e.target.value })} style={{ paddingRight: 44 }} />
+                  <button onClick={() => setShowConfirm(!showConfirm)} style={{ position: 'absolute', right: 12, top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#A0A0A0' }} type="button">
                     {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
             )}
 
-            <Link href={mode === 'signin' ? '/dashboard' : '/onboarding'} style={{ textDecoration: 'none' }}>
-              <button
-                className="btn-primary"
-                style={{ width: '100%', fontSize: 15 }}
-              >
-                {mode === 'signin' ? 'Sign In' : 'Create Account'}
-              </button>
-            </Link>
+            <button
+              onClick={mode === 'signin' ? handleSignIn : handleSignUp}
+              style={{ width: '100%', height: 48, borderRadius: 12, background: cfg.color, border: 'none', cursor: 'pointer', fontSize: 15, fontWeight: 700, color: activeRole === 'user' ? '#000' : '#000', transition: 'opacity 0.2s' }}
+            >
+              {mode === 'signin' ? `Sign In as ${cfg.label}` : 'Create Account'}
+            </button>
           </div>
 
-          {/* Toggle */}
-          <p style={{ textAlign: 'center', marginTop: 20, fontSize: 14, color: '#A0A0A0' }}>
+          <p style={{ textAlign: 'center', marginTop: 18, fontSize: 14, color: '#A0A0A0' }}>
             {mode === 'signin' ? "Don't have an account? " : 'Already have an account? '}
-            <button
-              onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
-              style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#22C55E', fontWeight: 600, fontSize: 14 }}
-            >
+            <button onClick={() => { setMode(mode === 'signin' ? 'signup' : 'signin'); setAuthError(''); }} style={{ background: 'none', border: 'none', cursor: 'pointer', color: cfg.color, fontWeight: 600, fontSize: 14 }}>
               {mode === 'signin' ? 'Sign Up' : 'Sign In'}
             </button>
           </p>

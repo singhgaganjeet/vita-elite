@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { Home, Apple, Users, Wrench, User, Dumbbell } from 'lucide-react';
+import { usePathname, useRouter } from 'next/navigation';
+import { Home, Apple, Users, Wrench, User, Dumbbell, LogOut } from 'lucide-react';
+import { useUserStore } from '@/stores/useUserStore';
 
 const navItems = [
   { href: '/dashboard', label: 'Home', icon: Home },
@@ -14,6 +15,13 @@ const navItems = [
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout, profile } = useUserStore();
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   return (
     <aside
@@ -88,36 +96,38 @@ export default function Sidebar() {
         })}
       </nav>
 
-      {/* User avatar */}
-      <div
-        style={{
-          padding: '20px 24px',
-          borderTop: '1px solid #2E2E2E',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 12,
-        }}
-      >
-        <div
+      {/* User avatar + logout */}
+      <div style={{ padding: '16px 12px', borderTop: '1px solid #2E2E2E' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', marginBottom: 4 }}>
+          <div
+            style={{
+              width: 36, height: 36, borderRadius: '50%',
+              background: 'rgba(34,197,94,0.15)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontWeight: 700, color: '#22C55E', fontSize: 13, flexShrink: 0,
+            }}
+          >
+            {profile.name.charAt(0).toUpperCase()}
+          </div>
+          <div style={{ overflow: 'hidden' }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.name}</div>
+            <div style={{ fontSize: 11, color: '#A0A0A0' }}>{profile.email}</div>
+          </div>
+        </div>
+        <button
+          onClick={handleLogout}
           style={{
-            width: 38,
-            height: 38,
-            borderRadius: '50%',
-            background: 'rgba(34,197,94,0.15)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontWeight: 700,
-            color: '#22C55E',
-            fontSize: 14,
+            width: '100%', display: 'flex', alignItems: 'center', gap: 10,
+            padding: '10px 14px', borderRadius: 10, border: 'none',
+            background: 'transparent', color: '#EF4444', cursor: 'pointer',
+            fontSize: 14, fontWeight: 500, transition: 'background 0.15s',
           }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
-          P
-        </div>
-        <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF' }}>Priya</div>
-          <div style={{ fontSize: 11, color: '#A0A0A0' }}>Free Plan</div>
-        </div>
+          <LogOut size={16} />
+          Sign Out
+        </button>
       </div>
     </aside>
   );

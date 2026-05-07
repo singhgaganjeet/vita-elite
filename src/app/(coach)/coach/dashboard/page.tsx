@@ -1,0 +1,126 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Calendar, Users, Star, TrendingUp, Clock, Video, MapPin, CheckCircle, AlertCircle, ChevronRight } from 'lucide-react';
+import Link from 'next/link';
+import { useCoachPortalStore } from '@/stores/useCoachPortalStore';
+import { coaches } from '@/data/coaches';
+
+export default function CoachDashboardPage() {
+  const [mounted, setMounted] = useState(false);
+  const { bookings, clients } = useCoachPortalStore();
+  useEffect(() => { setMounted(true); }, []);
+
+  const coach = coaches[0]; // Arjun Mehta
+
+  const upcoming = bookings.filter(b => b.status === 'confirmed' || b.status === 'pending').slice(0, 5);
+  const completed = bookings.filter(b => b.status === 'completed').length;
+  const thisMonthRevenue = bookings.filter(b => b.status === 'completed').reduce((s, b) => s + b.amount, 0);
+  const pending = bookings.filter(b => b.status === 'pending').length;
+
+  const stats = [
+    { label: 'Total Clients',     value: clients.length,          icon: Users,      color: '#3B82F6', bg: 'rgba(59,130,246,0.1)'  },
+    { label: 'Sessions Done',     value: completed,               icon: CheckCircle,color: '#22C55E', bg: 'rgba(34,197,94,0.1)'   },
+    { label: 'Pending Requests',  value: pending,                 icon: Clock,      color: '#F59E0B', bg: 'rgba(245,158,11,0.1)'  },
+    { label: 'Revenue (₹)',       value: `₹${(thisMonthRevenue/1000).toFixed(0)}k`, icon: TrendingUp, color: '#8B5CF6', bg: 'rgba(139,92,246,0.1)' },
+  ];
+
+  if (!mounted) return <div style={{ padding: 24 }}><div style={{ height: 200, background: '#0F1923', borderRadius: 16 }} /></div>;
+
+  return (
+    <div style={{ padding: '28px 24px', maxWidth: 900 }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 28 }}>
+        <div>
+          <p style={{ fontSize: 13, color: '#7A8FA6', marginBottom: 4 }}>Good morning,</p>
+          <h1 style={{ fontSize: 26, fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.5px' }}>{coach.name} 👋</h1>
+          <p style={{ fontSize: 13, color: '#7A8FA6', marginTop: 2 }}>{coach.designation}</p>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.2)', borderRadius: 20, padding: '6px 14px' }}>
+          <Star size={13} color="#22C55E" fill="#22C55E" />
+          <span style={{ fontSize: 13, fontWeight: 700, color: '#22C55E' }}>{coach.rating}</span>
+          <span style={{ fontSize: 12, color: '#7A8FA6' }}>· {coach.sessions} sessions</span>
+        </div>
+      </div>
+
+      {/* Stat cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 14, marginBottom: 28 }} className="sm:grid-cols-4">
+        {stats.map((s) => {
+          const Icon = s.icon;
+          return (
+            <div key={s.label} style={{ background: '#0F1923', border: '1px solid #1E2A38', borderRadius: 16, padding: '18px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+                <div style={{ width: 36, height: 36, borderRadius: 10, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Icon size={17} color={s.color} />
+                </div>
+              </div>
+              <p style={{ fontSize: 24, fontWeight: 900, color: '#FFFFFF', lineHeight: 1, marginBottom: 4 }}>{s.value}</p>
+              <p style={{ fontSize: 12, color: '#7A8FA6' }}>{s.label}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+        {/* Upcoming sessions */}
+        <div style={{ background: '#0F1923', border: '1px solid #1E2A38', borderRadius: 18, padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Calendar size={15} color="#3B82F6" />
+              <span style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>Upcoming Sessions</span>
+            </div>
+            <Link href="/coach/bookings" style={{ fontSize: 12, color: '#3B82F6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 2 }}>View all <ChevronRight size={12} /></Link>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {upcoming.length === 0 && <p style={{ fontSize: 13, color: '#7A8FA6', textAlign: 'center', padding: '20px 0' }}>No upcoming sessions</p>}
+            {upcoming.map(b => (
+              <div key={b.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', background: '#141E2B', borderRadius: 12 }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(59,130,246,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#3B82F6', flexShrink: 0 }}>
+                  {b.clientAvatar}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{b.clientName}</p>
+                  <p style={{ fontSize: 11, color: '#7A8FA6' }}>{b.date} · {b.time}</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+                  {b.type === 'video' ? <Video size={12} color="#3B82F6" /> : <MapPin size={12} color="#22C55E" />}
+                  <span style={{ fontSize: 10, color: b.status === 'pending' ? '#F59E0B' : '#22C55E', background: b.status === 'pending' ? 'rgba(245,158,11,0.1)' : 'rgba(34,197,94,0.1)', borderRadius: 6, padding: '2px 7px', fontWeight: 600, textTransform: 'capitalize' }}>{b.status}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Client overview */}
+        <div style={{ background: '#0F1923', border: '1px solid #1E2A38', borderRadius: 18, padding: 20 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Users size={15} color="#22C55E" />
+              <span style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>Active Clients</span>
+            </div>
+            <Link href="/coach/clients" style={{ fontSize: 12, color: '#3B82F6', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 2 }}>View all <ChevronRight size={12} /></Link>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {clients.slice(0, 5).map(c => (
+              <div key={c.id} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 12px', background: '#141E2B', borderRadius: 12 }}>
+                <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(34,197,94,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 700, color: '#22C55E', flexShrink: 0 }}>
+                  {c.avatar}
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{c.name}</p>
+                  <p style={{ fontSize: 11, color: '#7A8FA6' }}>{c.goal} · {c.sessionsCompleted} sessions</p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                  {c.progress === 'ahead' && <AlertCircle size={13} color="#22C55E" />}
+                  {c.progress === 'behind' && <AlertCircle size={13} color="#EF4444" />}
+                  {c.progress === 'on-track' && <CheckCircle size={13} color="#3B82F6" />}
+                  <span style={{ fontSize: 10, color: c.progress === 'ahead' ? '#22C55E' : c.progress === 'behind' ? '#EF4444' : '#3B82F6', fontWeight: 600 }}>{c.progress}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

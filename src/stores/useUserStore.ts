@@ -121,6 +121,7 @@ interface UserStore {
   saveProduct: (productName: string) => void
   getDailyCalorieGoal: () => number
   getBMI: () => number
+  logout: () => void
 }
 
 export const useUserStore = create<UserStore>()(
@@ -152,6 +153,15 @@ export const useUserStore = create<UserStore>()(
             ? state.savedProducts
             : [...state.savedProducts, productName],
         })),
+
+      logout: () => {
+        set({ profile: DEFAULT_PROFILE, measurements: DEFAULT_MEASUREMENTS, savedProducts: [] })
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('vita-user')
+          localStorage.removeItem('vita-nutrition')
+          localStorage.removeItem('vita-activity')
+        }
+      },
 
       getDailyCalorieGoal: () => {
         const { profile } = get()

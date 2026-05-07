@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Camera, Save } from 'lucide-react';
+import { Camera, Save, LogOut } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import {
   LineChart,
   Line,
@@ -49,14 +50,21 @@ export default function ProfilePage() {
   const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<ProfileTab>('personal');
   const [saved, setSaved] = useState(false);
+  const router = useRouter();
 
   const profile = useUserStore((s) => s.profile);
   const measurements = useUserStore((s) => s.measurements);
   const setProfile = useUserStore((s) => s.setProfile);
   const addMeasurement = useUserStore((s) => s.addMeasurement);
   const getBMI = useUserStore((s) => s.getBMI);
+  const logout = useUserStore((s) => s.logout);
   const getWeeklyData = useNutritionStore((s) => s.getWeeklyData);
   const getDailyCalorieGoal = useUserStore((s) => s.getDailyCalorieGoal);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/login');
+  };
 
   // Personal form state
   const [firstName, setFirstName] = useState('');
@@ -152,7 +160,21 @@ export default function ProfilePage() {
 
   return (
     <div style={{ padding: '24px 20px', maxWidth: 800, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF', marginBottom: 24 }}>Profile</h1>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF' }}>Profile</h1>
+        <button
+          onClick={handleLogout}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            padding: '8px 16px', borderRadius: 10, border: '1px solid rgba(239,68,68,0.3)',
+            background: 'rgba(239,68,68,0.08)', color: '#EF4444',
+            fontSize: 13, fontWeight: 600, cursor: 'pointer',
+          }}
+        >
+          <LogOut size={15} />
+          Sign Out
+        </button>
+      </div>
 
       {/* Tabs */}
       <div style={{ display: 'flex', gap: 0, background: '#1A1A1A', borderRadius: 12, padding: 4, marginBottom: 24, border: '1px solid #2E2E2E' }}>

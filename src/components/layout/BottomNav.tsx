@@ -30,7 +30,6 @@ export default function BottomNav() {
           height: 'calc(64px + env(safe-area-inset-bottom, 0px))',
           background: '#1A1A1A',
           borderTop: '1px solid #2E2E2E',
-          display: 'flex',
           alignItems: 'flex-start',
           zIndex: 100,
           paddingBottom: 'env(safe-area-inset-bottom, 0px)',

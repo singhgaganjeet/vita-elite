@@ -22,7 +22,6 @@ export default function Sidebar() {
         minHeight: '100vh',
         background: '#1A1A1A',
         borderRight: '1px solid #2E2E2E',
-        display: 'flex',
         flexDirection: 'column',
         position: 'fixed',
         top: 0,

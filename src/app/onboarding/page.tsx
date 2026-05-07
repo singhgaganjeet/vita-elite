@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { ChevronRight, ChevronLeft, Dumbbell, Apple, Wrench, Activity, Scale, Target, Zap } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { ChevronRight, ChevronLeft, Dumbbell, Apple, Wrench, Zap } from 'lucide-react';
+import { useUserStore } from '@/stores/useUserStore';
 
 type Goal =
   | 'Weight Loss'
@@ -32,15 +33,22 @@ function getBMIInfo(bmi: number): { category: string; color: string } {
 }
 
 export default function OnboardingPage() {
+  const router = useRouter();
+  const setProfile = useUserStore((s) => s.setProfile);
+  const addMeasurement = useUserStore((s) => s.addMeasurement);
+
   const [step, setStep] = useState(1);
   const [name, setName] = useState('');
   const [age, setAge] = useState('');
-  const [sex, setSex] = useState('');
+  const [sex, setSex] = useState<'male' | 'female' | 'prefer-not-to-say'>('female');
   const [city, setCity] = useState('');
-  const [state, setState] = useState('');
+  const [stateVal, setStateVal] = useState('');
   const [weight, setWeight] = useState(70);
   const [height, setHeight] = useState(170);
   const [goals, setGoals] = useState<Goal[]>([]);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   const totalSteps = 5;
   const bmi = weight / Math.pow(height / 100, 2);
@@ -49,6 +57,36 @@ export default function OnboardingPage() {
   const toggleGoal = (g: Goal) => {
     setGoals((prev) => (prev.includes(g) ? prev.filter((x) => x !== g) : [...prev, g]));
   };
+
+  const handleStep2Next = () => {
+    setProfile({
+      name: name.trim() || 'User',
+      age: parseInt(age) || 25,
+      sex,
+      city: city.trim(),
+      state: stateVal.trim(),
+    });
+    setStep(3);
+  };
+
+  const handleStep3Next = () => {
+    setProfile({ weight, height });
+    addMeasurement('weight', weight);
+    addMeasurement('height', height);
+    setStep(4);
+  };
+
+  const handleStep4Next = () => {
+    setProfile({ goals });
+    setStep(5);
+  };
+
+  const handleFinish = () => {
+    setProfile({ onboardingComplete: true });
+    router.push('/dashboard');
+  };
+
+  if (!mounted) return null;
 
   return (
     <div
@@ -75,14 +113,7 @@ export default function OnboardingPage() {
         }}
       />
 
-      <div
-        style={{
-          width: '100%',
-          maxWidth: 520,
-          position: 'relative',
-          zIndex: 1,
-        }}
-      >
+      <div style={{ width: '100%', maxWidth: 520, position: 'relative', zIndex: 1 }}>
         {/* Progress bar */}
         {step > 1 && (
           <div style={{ marginBottom: 32 }}>
@@ -107,13 +138,7 @@ export default function OnboardingPage() {
         {/* Step 1: Welcome */}
         {step === 1 && (
           <div
-            style={{
-              textAlign: 'center',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: 24,
-            }}
+            style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 24 }}
             className="animate-fade-in-up"
           >
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -132,19 +157,6 @@ export default function OnboardingPage() {
               >
                 <Dumbbell size={36} color="#22C55E" />
               </div>
-              <div
-                style={{
-                  position: 'absolute',
-                  top: 6,
-                  right: 6,
-                  width: 12,
-                  height: 12,
-                  borderRadius: '50%',
-                  background: '#22C55E',
-                  boxShadow: '0 0 0 0 rgba(34,197,94,0.4)',
-                  animation: 'pulse-green 1.5s ease-in-out infinite',
-                }}
-              />
             </div>
 
             <div>
@@ -156,7 +168,7 @@ export default function OnboardingPage() {
                 Let&apos;s build your health profile
               </h1>
               <p style={{ fontSize: 15, color: '#A0A0A0', lineHeight: 1.6, maxWidth: 380 }}>
-                Answer a few quick questions so we can personalise your Vita Elite experience — coaches, nutrition, and tools tailored just for you.
+                Answer a few quick questions so we can personalise your Vita Elite experience.
               </p>
             </div>
 
@@ -191,13 +203,12 @@ export default function OnboardingPage() {
                   <select
                     className="input-field"
                     value={sex}
-                    onChange={(e) => setSex(e.target.value)}
+                    onChange={(e) => setSex(e.target.value as typeof sex)}
                     style={{ cursor: 'pointer' }}
                   >
-                    <option value="" disabled>Select</option>
-                    <option value="male">Male</option>
                     <option value="female">Female</option>
-                    <option value="other">Prefer not to say</option>
+                    <option value="male">Male</option>
+                    <option value="prefer-not-to-say">Prefer not to say</option>
                   </select>
                 </div>
               </div>
@@ -208,7 +219,7 @@ export default function OnboardingPage() {
                 </div>
                 <div>
                   <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>State</label>
-                  <input className="input-field" placeholder="Maharashtra" value={state} onChange={(e) => setState(e.target.value)} />
+                  <input className="input-field" placeholder="Maharashtra" value={stateVal} onChange={(e) => setStateVal(e.target.value)} />
                 </div>
               </div>
             </div>
@@ -217,7 +228,7 @@ export default function OnboardingPage() {
               <button onClick={() => setStep(1)} className="btn-secondary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 <ChevronLeft size={16} /> Back
               </button>
-              <button onClick={() => setStep(3)} className="btn-primary" style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={handleStep2Next} className="btn-primary" style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 Continue <ChevronRight size={16} />
               </button>
             </div>
@@ -228,7 +239,7 @@ export default function OnboardingPage() {
         {step === 3 && (
           <div className="animate-fade-in-up" style={{ background: '#1A1A1A', borderRadius: 24, border: '1px solid #2E2E2E', padding: '36px 32px' }}>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>Body Metrics</h2>
-            <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 28 }}>Used to calculate your BMI and set goals</p>
+            <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 28 }}>Used to calculate your BMI and calorie goal</p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
               <div>
@@ -237,10 +248,7 @@ export default function OnboardingPage() {
                   <span style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>{weight} <span style={{ fontSize: 12, color: '#A0A0A0' }}>kg</span></span>
                 </div>
                 <input
-                  type="range"
-                  min={30}
-                  max={200}
-                  value={weight}
+                  type="range" min={30} max={200} value={weight}
                   onChange={(e) => setWeight(Number(e.target.value))}
                   style={{ width: '100%', accentColor: '#22C55E', cursor: 'pointer', height: 6 }}
                 />
@@ -256,10 +264,7 @@ export default function OnboardingPage() {
                   <span style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>{height} <span style={{ fontSize: 12, color: '#A0A0A0' }}>cm</span></span>
                 </div>
                 <input
-                  type="range"
-                  min={100}
-                  max={220}
-                  value={height}
+                  type="range" min={100} max={220} value={height}
                   onChange={(e) => setHeight(Number(e.target.value))}
                   style={{ width: '100%', accentColor: '#22C55E', cursor: 'pointer', height: 6 }}
                 />
@@ -269,7 +274,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              {/* BMI Display */}
+              {/* Live BMI */}
               <div
                 style={{
                   background: '#242424',
@@ -307,7 +312,7 @@ export default function OnboardingPage() {
               <button onClick={() => setStep(2)} className="btn-secondary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 <ChevronLeft size={16} /> Back
               </button>
-              <button onClick={() => setStep(4)} className="btn-primary" style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={handleStep3Next} className="btn-primary" style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 Continue <ChevronRight size={16} />
               </button>
             </div>
@@ -318,7 +323,7 @@ export default function OnboardingPage() {
         {step === 4 && (
           <div className="animate-fade-in-up" style={{ background: '#1A1A1A', borderRadius: 24, border: '1px solid #2E2E2E', padding: '36px 32px' }}>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>Health Goals</h2>
-            <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 28 }}>Select all that apply — we&apos;ll tailor everything for you</p>
+            <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 28 }}>Select all that apply</p>
 
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
               {ALL_GOALS.map((g) => {
@@ -349,14 +354,14 @@ export default function OnboardingPage() {
               <button onClick={() => setStep(3)} className="btn-secondary" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 <ChevronLeft size={16} /> Back
               </button>
-              <button onClick={() => setStep(5)} className="btn-primary" style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+              <button onClick={handleStep4Next} className="btn-primary" style={{ flex: 2, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
                 Continue <ChevronRight size={16} />
               </button>
             </div>
           </div>
         )}
 
-        {/* Step 5: Feature walkthrough */}
+        {/* Step 5: Feature Walkthrough */}
         {step === 5 && (
           <div className="animate-fade-in-up">
             <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -370,24 +375,9 @@ export default function OnboardingPage() {
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 28 }}>
               {[
-                {
-                  icon: <Dumbbell size={22} color="#22C55E" />,
-                  title: 'Coach Booking',
-                  desc: 'Book certified coaches, dietitians & physios for home sessions. First consultation just ₹100.',
-                  color: '#22C55E',
-                },
-                {
-                  icon: <Apple size={22} color="#F5C518" />,
-                  title: 'Calorie Tracker',
-                  desc: 'Log every meal, scan food labels, and track your macros with our smart nutrition engine.',
-                  color: '#F5C518',
-                },
-                {
-                  icon: <Wrench size={22} color="#3B82F6" />,
-                  title: 'Health Tools',
-                  desc: 'BMI calculator, food scanner, and label analyser — all free, all instant.',
-                  color: '#3B82F6',
-                },
+                { icon: <Dumbbell size={22} color="#22C55E" />, title: 'Coach Booking', desc: 'Book certified coaches, dietitians & physios. First consult just ₹100.', color: '#22C55E' },
+                { icon: <Apple size={22} color="#F5C518" />, title: 'Calorie Tracker', desc: 'Log meals, scan barcodes, track macros with Open Food Facts.', color: '#F5C518' },
+                { icon: <Wrench size={22} color="#3B82F6" />, title: 'Health Tools', desc: 'BMI calculator, food scanner, and label analyser — all free.', color: '#3B82F6' },
               ].map((item, i) => (
                 <div
                   key={i}
@@ -396,7 +386,7 @@ export default function OnboardingPage() {
                     alignItems: 'flex-start',
                     gap: 16,
                     background: '#1A1A1A',
-                    border: `1px solid #2E2E2E`,
+                    border: '1px solid #2E2E2E',
                     borderRadius: 16,
                     padding: '18px 20px',
                   }}
@@ -423,14 +413,13 @@ export default function OnboardingPage() {
               ))}
             </div>
 
-            <Link href="/dashboard" style={{ textDecoration: 'none' }}>
-              <button
-                className="btn-primary"
-                style={{ width: '100%', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
-              >
-                Start Exploring <Zap size={18} />
-              </button>
-            </Link>
+            <button
+              onClick={handleFinish}
+              className="btn-primary"
+              style={{ width: '100%', fontSize: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}
+            >
+              Start Exploring <Zap size={18} />
+            </button>
           </div>
         )}
       </div>

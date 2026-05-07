@@ -43,3 +43,5 @@ next-env.d.ts
 # claude
 .claude/
 tmp_scaffold/
+
+.vercel

@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   Camera, Search, X, Loader2, ScanLine, AlertCircle, AlertTriangle,
-  CheckCircle, XCircle, Bookmark, BookmarkCheck, ImageIcon, RefreshCw,
+  CheckCircle, XCircle, Bookmark, BookmarkCheck, ImageIcon, RefreshCw, Sparkles,
 } from 'lucide-react';
 import { useUserStore } from '@/stores/useUserStore';
 
@@ -512,28 +512,37 @@ export default function LabelScannerPage() {
     if (!capturedImage) return;
     setStep('processing');
     setOcrProgress(0);
-    try {
-      const { createWorker } = await import('tesseract.js');
-      const worker = await createWorker('eng', 1, {
-        logger: (m: { status: string; progress: number }) => {
-          if (m.status === 'recognizing text') setOcrProgress(Math.round(m.progress * 100));
-        },
-      });
-      const { data: { text } } = await worker.recognize(capturedImage);
-      await worker.terminate();
 
-      const parsed = parseNutritionLabel(text);
-      const hasData = Object.values(parsed).some(v => v !== null && v !== 0);
-      if (!hasData) {
-        setOcrError('Could not read nutrition values. Make sure the label is well-lit, in focus, and fills the frame.');
+    // Animate progress while the API call is in flight
+    const fakeProgress = setInterval(() => {
+      setOcrProgress((p) => (p < 85 ? p + 5 : p));
+    }, 400);
+
+    try {
+      const base64Data = capturedImage.replace(/^data:image\/\w+;base64,/, '');
+      const mediaType = capturedImage.startsWith('data:image/png') ? 'image/png' : 'image/jpeg';
+
+      const res = await fetch('/api/analyze-label', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageBase64: base64Data, mediaType, goals: profile.goals }),
+      });
+
+      clearInterval(fakeProgress);
+      setOcrProgress(100);
+
+      const data = await res.json();
+      if (data.error) {
+        setOcrError(data.error);
         setStep('error');
         return;
       }
-      const result = buildReportFromOCR(parsed, profile.goals, text);
-      setReport(result);
+
+      setReport(data as AnalysisReport);
       setStep('done');
     } catch {
-      setOcrError('OCR processing failed. Please try again with a clearer photo.');
+      clearInterval(fakeProgress);
+      setOcrError('Analysis failed. Please check your connection and try again.');
       setStep('error');
     }
   }, [capturedImage, profile.goals]);
@@ -597,7 +606,7 @@ export default function LabelScannerPage() {
     <div style={{ padding: '24px 20px', maxWidth: 620, margin: '0 auto', background: 'var(--ve-bg, #F8F5FF)', minHeight: '100vh' }}>
       <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ve-text, #1A0A2E)', marginBottom: 4 }}>Label Scanner</h1>
       <p style={{ fontSize: 14, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 24 }}>
-        Photograph a nutrition facts label — we&apos;ll analyse it for you
+        Photograph a nutrition facts label — our AI will analyse it and give health guidance
       </p>
 
       {/* Mode Tabs */}
@@ -632,7 +641,9 @@ export default function LabelScannerPage() {
             background: 'var(--ve-surface, #FFFFFF)',
             border: '1px solid var(--ve-border, #E8E0FA)',
             borderRadius: 24,
-            overflow: 'hidden', marginBottom: 20, minHeight: 280,
+            overflow: 'hidden', marginBottom: 20,
+            maxWidth: 420, width: '100%', margin: '0 auto 20px',
+            aspectRatio: '4/3',
             position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
             boxShadow: '0 4px 24px rgba(124,58,237,0.08)',
           }}>
@@ -656,15 +667,15 @@ export default function LabelScannerPage() {
               <img src={capturedImage} alt="Captured label" style={{ width: '100%', maxHeight: 400, objectFit: 'contain' }} />
             )}
 
-            {/* OCR Processing overlay */}
+            {/* AI Processing overlay */}
             {step === 'processing' && (
               <div style={{ position: 'absolute', inset: 0, background: 'rgba(248,245,255,0.92)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
-                <Loader2 size={36} color="#7C3AED" style={{ animation: 'spin 1s linear infinite' }} />
-                <p style={{ color: 'var(--ve-text, #1A0A2E)', fontSize: 15, fontWeight: 600 }}>Reading nutrition label…</p>
+                <Sparkles size={36} color="#7C3AED" style={{ animation: 'pulse 1.5s ease-in-out infinite' }} />
+                <p style={{ color: 'var(--ve-text, #1A0A2E)', fontSize: 15, fontWeight: 600 }}>Analysing with AI…</p>
                 <div style={{ width: '100%', background: 'var(--ve-border, #E8E0FA)', borderRadius: 99, height: 6 }}>
-                  <div style={{ height: 6, borderRadius: 99, background: 'linear-gradient(90deg, #7C3AED, #EC4899)', width: `${ocrProgress}%`, transition: 'width 0.3s' }} />
+                  <div style={{ height: 6, borderRadius: 99, background: 'linear-gradient(90deg, #7C3AED, #EC4899)', width: `${ocrProgress}%`, transition: 'width 0.4s ease' }} />
                 </div>
-                <p style={{ color: 'var(--ve-text-3, #9B8EC4)', fontSize: 12 }}>{ocrProgress}% — analysing text</p>
+                <p style={{ color: 'var(--ve-text-3, #9B8EC4)', fontSize: 12 }}>Reading label and building health report…</p>
               </div>
             )}
 
@@ -845,6 +856,10 @@ export default function LabelScannerPage() {
         @keyframes spin {
           from { transform: translateY(-50%) rotate(0deg); }
           to   { transform: translateY(-50%) rotate(360deg); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.1); }
         }
       `}</style>
     </div>

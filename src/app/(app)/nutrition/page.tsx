@@ -94,12 +94,12 @@ function NutritionPageInner() {
   const [searching, setSearching] = useState(false);
   const [searchError, setSearchError] = useState('');
 
-  const getTodayLog = useNutritionStore((s) => s.getTodayLog);
+  const logs = useNutritionStore((s) => s.logs);
   const addFoodEntry = useNutritionStore((s) => s.addFoodEntry);
   const removeFoodEntry = useNutritionStore((s) => s.removeFoodEntry);
-  const getTodayTotals = useNutritionStore((s) => s.getTodayTotals);
-  const getWeeklyData = useNutritionStore((s) => s.getWeeklyData);
   const getDailyCalorieGoal = useUserStore((s) => s.getDailyCalorieGoal);
+
+  const todayKey = new Date().toISOString().split('T')[0];
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -109,6 +109,43 @@ function NutritionPageInner() {
       setExpanded((p) => ({ ...p, [initialMeal]: true }));
     }
   }, [initialMeal]);
+
+  const log = useMemo(() => {
+    return logs[todayKey] ?? { date: todayKey, meals: { Breakfast: [], Lunch: [], Dinner: [], Snacks: [] } };
+  }, [logs, todayKey]);
+
+  const totals = useMemo(() => {
+    let calories = 0, protein = 0, carbs = 0, fats = 0, fibre = 0;
+    MEALS.forEach((meal) => {
+      log.meals[meal].forEach((e) => {
+        calories += e.calories * e.quantity;
+        protein += e.protein * e.quantity;
+        carbs += e.carbs * e.quantity;
+        fats += e.fats * e.quantity;
+        fibre += e.fibre * e.quantity;
+      });
+    });
+    return { calories: Math.round(calories), protein: Math.round(protein), carbs: Math.round(carbs), fats: Math.round(fats), fibre: Math.round(fibre) };
+  }, [log]);
+
+  const weeklyData = useMemo(() => {
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const result = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const dateStr = d.toISOString().split('T')[0];
+      const dayLog = logs[dateStr];
+      let cal = 0;
+      if (dayLog) {
+        MEALS.forEach((meal) => {
+          dayLog.meals[meal].forEach((e) => { cal += e.calories * e.quantity; });
+        });
+      }
+      result.push({ day: days[d.getDay()], calories: Math.round(cal), goal: 1800 });
+    }
+    return result;
+  }, [logs]);
 
   // Search Open Food Facts or local foods
   const doSearch = useCallback(async (query: string) => {
@@ -165,10 +202,7 @@ function NutritionPageInner() {
     );
   }
 
-  const log = getTodayLog();
-  const totals = getTodayTotals();
   const goal = getDailyCalorieGoal();
-  const weeklyData = getWeeklyData();
 
   const mealCalories = (meal: MealType) =>
     Math.round(log.meals[meal].reduce((s, e) => s + e.calories * e.quantity, 0));

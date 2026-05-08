@@ -116,6 +116,53 @@ export default function DashboardPage() {
         <p style={{ fontSize: 14, color: 'var(--ve-text-3)' }}>{dateStr}</p>
       </div>
 
+      {/* Coach Card */}
+      <div
+        className="gradient-card"
+        style={{ padding: '24px 20px', marginBottom: 16, position: 'relative', overflow: 'hidden' }}
+      >
+        <div
+          style={{
+            position: 'absolute',
+            top: -20,
+            right: -20,
+            width: 100,
+            height: 100,
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(236,72,153,0.18) 0%, transparent 70%)',
+          }}
+        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+          <div
+            style={{
+              width: 36,
+              height: 36,
+              borderRadius: 10,
+              background: 'rgba(236,72,153,0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <Star size={16} color="var(--ve-pink)" fill="var(--ve-pink)" />
+          </div>
+          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--ve-pink)' }}>
+            Level Up
+          </span>
+        </div>
+        <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--ve-text)', marginBottom: 6 }}>
+          Level up your health — Book a Coach
+        </h3>
+        <p style={{ fontSize: 13, color: 'var(--ve-text-3)', marginBottom: 16 }}>
+          1-day free consultation. Starts at just <span style={{ color: 'var(--ve-purple)', fontWeight: 700 }}>₹100</span>
+        </p>
+        <Link href="/coaches" style={{ textDecoration: 'none' }}>
+          <button className="btn-primary" style={{ padding: '0 24px', fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
+            Browse Coaches <ChevronRight size={16} />
+          </button>
+        </Link>
+      </div>
+
       {/* Calorie Ring + Macros */}
       <div
         style={{
@@ -424,53 +471,6 @@ export default function DashboardPage() {
             </div>
           </div>
         )}
-      </div>
-
-      {/* Coach Card */}
-      <div
-        className="gradient-card"
-        style={{ padding: '24px 20px', marginBottom: 16, position: 'relative', overflow: 'hidden' }}
-      >
-        <div
-          style={{
-            position: 'absolute',
-            top: -20,
-            right: -20,
-            width: 100,
-            height: 100,
-            borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(236,72,153,0.18) 0%, transparent 70%)',
-          }}
-        />
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: 'rgba(236,72,153,0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Star size={16} color="var(--ve-pink)" fill="var(--ve-pink)" />
-          </div>
-          <span style={{ fontSize: 11, fontWeight: 600, letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--ve-pink)' }}>
-            Level Up
-          </span>
-        </div>
-        <h3 style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 6 }}>
-          Level up your health — Book a Coach
-        </h3>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.75)', marginBottom: 16 }}>
-          1-day free consultation. Starts at just <span style={{ color: '#FFFFFF', fontWeight: 700 }}>₹100</span>
-        </p>
-        <Link href="/coaches" style={{ textDecoration: 'none' }}>
-          <button className="btn-primary" style={{ padding: '0 24px', fontSize: 14, display: 'inline-flex', alignItems: 'center', gap: 6 }}>
-            Browse Coaches <ChevronRight size={16} />
-          </button>
-        </Link>
       </div>
 
       {/* Body Measurements */}

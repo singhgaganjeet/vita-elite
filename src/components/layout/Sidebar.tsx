@@ -1,25 +1,37 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
-import { Home, Apple, Users, Wrench, User, Dumbbell, LogOut } from 'lucide-react';
+import { Home, Apple, Users, Wrench, User, LogOut, ChevronLeft } from 'lucide-react';
 import { useUserStore } from '@/stores/useUserStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 const navItems = [
-  { href: '/dashboard', label: 'Home', icon: Home },
-  { href: '/nutrition', label: 'Nutrition', icon: Apple },
-  { href: '/coaches', label: 'Coaches', icon: Users },
-  { href: '/tools', label: 'Tools', icon: Wrench },
-  { href: '/profile', label: 'Profile', icon: User },
+  { href: '/dashboard',  label: 'Home',      icon: Home },
+  { href: '/nutrition',  label: 'Nutrition',  icon: Apple },
+  { href: '/coaches',    label: 'Coaches',    icon: Users },
+  { href: '/tools',      label: 'Tools',      icon: Wrench },
+  { href: '/profile',    label: 'Profile',    icon: User },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  open: boolean;
+  onToggle: () => void;
+}
+
+export default function Sidebar({ open, onToggle }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const { logout, profile } = useUserStore();
+  const { logout: logoutUser, profile } = useUserStore();
+  const { logout: logoutAuth, name: authName, email: authEmail } = useAuthStore();
 
-  const handleLogout = () => {
-    logout();
+  const displayName = authName || profile.name;
+  const displayEmail = authEmail || profile.email;
+
+  const handleLogout = async () => {
+    logoutUser();
+    await logoutAuth();
     router.push('/login');
   };
 
@@ -28,46 +40,53 @@ export default function Sidebar() {
       style={{
         width: 240,
         minHeight: '100vh',
-        background: '#1A1A1A',
-        borderRight: '1px solid #2E2E2E',
+        background: '#FFFFFF',
+        borderRight: '1px solid var(--ve-border)',
         flexDirection: 'column',
         position: 'fixed',
-        top: 0,
-        left: 0,
-        bottom: 0,
+        top: 0, left: 0, bottom: 0,
         zIndex: 40,
+        boxShadow: '4px 0 24px rgba(124,58,237,0.06)',
+        transform: open ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 0.25s ease',
       }}
       className="hidden lg:flex"
     >
-      {/* Logo */}
-      <div style={{ padding: '28px 24px 24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div
-            style={{
-              width: 36,
-              height: 36,
-              borderRadius: 10,
-              background: 'rgba(34,197,94,0.15)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Dumbbell size={18} color="#22C55E" />
-          </div>
+      {/* Logo + toggle */}
+      <div style={{ padding: '24px 20px 18px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <Image src="/logo.png" alt="Vita Elite" width={36} height={36} style={{ objectFit: 'contain' }} />
           <div>
-            <span style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.5px' }}>
-              VITA
-            </span>
-            <span style={{ fontSize: 18, fontWeight: 800, color: '#22C55E', letterSpacing: '-0.5px' }}>
-              ELITE
-            </span>
+            <div style={{ fontSize: 16, fontWeight: 700, fontFamily: 'Cormorant Garamond, Georgia, serif', letterSpacing: '-0.5px', lineHeight: 1 }}>
+              <span style={{ background: 'linear-gradient(135deg, #7C3AED, #EC4899)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+                Vita Elite
+              </span>
+            </div>
+            <div style={{ fontSize: 9, color: 'var(--ve-text-3)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1.5px', marginTop: 1 }}>
+              Member Portal
+            </div>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={onToggle}
+          title="Collapse sidebar"
+          style={{
+            width: 28, height: 28, borderRadius: 8, border: '1px solid var(--ve-border)',
+            background: 'transparent', cursor: 'pointer', display: 'flex',
+            alignItems: 'center', justifyContent: 'center', color: 'var(--ve-text-3)',
+            flexShrink: 0, transition: 'all 0.15s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = 'var(--ve-surface-2)'; e.currentTarget.style.color = 'var(--ve-purple)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--ve-text-3)'; }}
+        >
+          <ChevronLeft size={15} />
+        </button>
       </div>
 
-      {/* Nav */}
-      <nav style={{ flex: 1, padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div style={{ height: 1, background: 'var(--ve-border)', margin: '0 16px' }} />
+
+      <nav style={{ flex: 1, padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 2 }}>
         {navItems.map(({ href, label, icon: Icon }) => {
           const active = pathname === href || pathname.startsWith(href + '/');
           return (
@@ -75,58 +94,53 @@ export default function Sidebar() {
               key={href}
               href={href}
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 12,
-                padding: '11px 14px',
-                borderRadius: 12,
-                textDecoration: 'none',
-                background: active ? 'rgba(34,197,94,0.1)' : 'transparent',
-                borderLeft: active ? '3px solid #22C55E' : '3px solid transparent',
-                color: active ? '#22C55E' : '#A0A0A0',
-                fontWeight: active ? 600 : 400,
-                fontSize: 14,
-                transition: 'all 0.15s',
+                display: 'flex', alignItems: 'center', gap: 11,
+                padding: '10px 14px', borderRadius: 10, textDecoration: 'none',
+                background: active ? 'linear-gradient(135deg, rgba(124,58,237,0.08), rgba(236,72,153,0.08))' : 'transparent',
+                color: active ? 'var(--ve-purple)' : 'var(--ve-text-2)',
+                fontWeight: active ? 600 : 400, fontSize: 14, transition: 'all 0.15s',
+                borderLeft: `2px solid ${active ? 'var(--ve-purple)' : 'transparent'}`,
               }}
             >
-              <Icon size={18} />
+              <Icon size={17} strokeWidth={active ? 2.2 : 1.8} />
               {label}
             </Link>
           );
         })}
       </nav>
 
-      {/* User avatar + logout */}
-      <div style={{ padding: '16px 12px', borderTop: '1px solid #2E2E2E' }}>
+      <div style={{ height: 1, background: 'var(--ve-border)', margin: '0 16px' }} />
+
+      <div style={{ padding: '14px 10px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 14px', marginBottom: 4 }}>
-          <div
-            style={{
-              width: 36, height: 36, borderRadius: '50%',
-              background: 'rgba(34,197,94,0.15)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontWeight: 700, color: '#22C55E', fontSize: 13, flexShrink: 0,
-            }}
-          >
-            {profile.name.charAt(0).toUpperCase()}
+          <div style={{
+            width: 34, height: 34, borderRadius: '50%',
+            background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontWeight: 700, color: '#FFFFFF', fontSize: 13, flexShrink: 0,
+          }}>
+            {(displayName || 'U').charAt(0).toUpperCase()}
           </div>
           <div style={{ overflow: 'hidden' }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{profile.name}</div>
-            <div style={{ fontSize: 11, color: '#A0A0A0' }}>{profile.email}</div>
+            <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ve-text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {displayName}
+            </div>
+            <div style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>{displayEmail}</div>
           </div>
         </div>
         <button
+          type="button"
           onClick={handleLogout}
           style={{
             width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-            padding: '10px 14px', borderRadius: 10, border: 'none',
-            background: 'transparent', color: '#EF4444', cursor: 'pointer',
-            fontSize: 14, fontWeight: 500, transition: 'background 0.15s',
+            padding: '9px 14px', borderRadius: 10, border: 'none',
+            background: 'transparent', color: 'var(--ve-danger)', cursor: 'pointer',
+            fontSize: 13, fontWeight: 500, transition: 'background 0.15s',
           }}
-          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.08)')}
+          onMouseEnter={e => (e.currentTarget.style.background = 'rgba(239,68,68,0.07)')}
           onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
         >
-          <LogOut size={16} />
-          Sign Out
+          <LogOut size={15} /> Sign Out
         </button>
       </div>
     </aside>

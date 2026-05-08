@@ -4,6 +4,7 @@ import { persist } from 'zustand/middleware'
 export interface UserProfile {
   name: string
   email: string
+  avatarUrl: string
   age: number
   dob: string
   sex: 'male' | 'female' | 'prefer-not-to-say'
@@ -74,6 +75,7 @@ function seedDate(daysAgo: number): string {
 const DEFAULT_PROFILE: UserProfile = {
   name: 'Priya Sharma',
   email: 'demo@vitaelite.com',
+  avatarUrl: '',
   age: 28,
   dob: '1997-03-15',
   sex: 'female',

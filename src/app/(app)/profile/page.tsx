@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Camera, Save, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import {
@@ -39,9 +39,9 @@ const MEASUREMENT_FIELDS: { key: MeasurementKey; label: string; unit: string }[]
 function LoadingSkeleton() {
   return (
     <div style={{ padding: '24px 20px' }}>
-      <div style={{ height: 40, background: '#1A1A1A', borderRadius: 12, marginBottom: 24, width: '30%' }} />
-      <div style={{ height: 50, background: '#1A1A1A', borderRadius: 12, marginBottom: 24 }} />
-      <div style={{ height: 300, background: '#1A1A1A', borderRadius: 20 }} />
+      <div style={{ height: 40, background: 'var(--ve-border)', borderRadius: 12, marginBottom: 24, width: '30%' }} />
+      <div style={{ height: 50, background: 'var(--ve-border)', borderRadius: 12, marginBottom: 24 }} />
+      <div style={{ height: 300, background: 'var(--ve-border)', borderRadius: 20 }} />
     </div>
   );
 }
@@ -50,6 +50,7 @@ export default function ProfilePage() {
   const [mounted, setMounted] = useState(false);
   const [tab, setTab] = useState<ProfileTab>('personal');
   const [saved, setSaved] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   const profile = useUserStore((s) => s.profile);
@@ -105,6 +106,18 @@ export default function ProfilePage() {
 
   if (!mounted) return <LoadingSkeleton />;
 
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === 'string') {
+        setProfile({ avatarUrl: reader.result });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSavePersonal = () => {
     setProfile({
       name: `${firstName} ${lastName}`.trim(),
@@ -154,20 +167,20 @@ export default function ProfilePage() {
     bmi < 25 ? 'Normal' :
     bmi < 30 ? 'Overweight' : 'Obese';
   const bmiColor =
-    bmi < 18.5 ? '#3B82F6' :
-    bmi < 25 ? '#22C55E' :
-    bmi < 30 ? '#F5C518' : '#EF4444';
+    bmi < 18.5 ? '#8B5CF6' :
+    bmi < 25 ? '#10B981' :
+    bmi < 30 ? '#F59E0B' : '#EF4444';
 
   return (
     <div style={{ padding: '24px 20px', maxWidth: 800, margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF' }}>Profile</h1>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ve-text)' }}>Profile</h1>
         <button
           onClick={handleLogout}
           style={{
             display: 'flex', alignItems: 'center', gap: 8,
-            padding: '8px 16px', borderRadius: 10, border: '1px solid rgba(239,68,68,0.3)',
-            background: 'rgba(239,68,68,0.08)', color: '#EF4444',
+            padding: '8px 16px', borderRadius: 10, border: '1px solid rgba(239,68,68,0.25)',
+            background: 'rgba(239,68,68,0.06)', color: '#EF4444',
             fontSize: 13, fontWeight: 600, cursor: 'pointer',
           }}
         >
@@ -177,7 +190,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display: 'flex', gap: 0, background: '#1A1A1A', borderRadius: 12, padding: 4, marginBottom: 24, border: '1px solid #2E2E2E' }}>
+      <div style={{ display: 'flex', gap: 0, background: 'var(--ve-bg)', borderRadius: 12, padding: 4, marginBottom: 24, border: '1px solid var(--ve-border)' }}>
         {(['personal', 'measurements', 'progress'] as ProfileTab[]).map((t) => (
           <button
             key={t}
@@ -187,13 +200,14 @@ export default function ProfilePage() {
               padding: '8px 12px',
               borderRadius: 9,
               border: 'none',
-              background: tab === t ? '#22C55E' : 'transparent',
-              color: tab === t ? '#000000' : '#A0A0A0',
+              background: tab === t ? 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%)' : 'transparent',
+              color: tab === t ? '#FFFFFF' : 'var(--ve-text-3)',
               fontSize: 13,
               fontWeight: tab === t ? 700 : 400,
               cursor: 'pointer',
               transition: 'all 0.2s',
               textTransform: 'capitalize',
+              boxShadow: tab === t ? '0 4px 24px rgba(124,58,237,0.15)' : 'none',
             }}
           >
             {t === 'personal' ? 'Personal' : t === 'measurements' ? 'Measurements' : 'Progress'}
@@ -206,24 +220,42 @@ export default function ProfilePage() {
         <div className="animate-fade-in-up">
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 28 }}>
             <div style={{ position: 'relative' }}>
-              <div
-                style={{
-                  width: 100,
-                  height: 100,
-                  borderRadius: '50%',
-                  background: 'rgba(34,197,94,0.15)',
-                  border: '3px solid rgba(34,197,94,0.3)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontSize: 36,
-                  fontWeight: 800,
-                  color: '#22C55E',
-                }}
-              >
-                {firstName.charAt(0).toUpperCase()}
-              </div>
+              {profile.avatarUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={profile.avatarUrl}
+                  alt="Profile"
+                  style={{ width: 100, height: 100, borderRadius: '50%', objectFit: 'cover', border: '3px solid rgba(124,58,237,0.25)' }}
+                />
+              ) : (
+                <div
+                  style={{
+                    width: 100,
+                    height: 100,
+                    borderRadius: '50%',
+                    background: 'rgba(124,58,237,0.10)',
+                    border: '3px solid rgba(124,58,237,0.25)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 36,
+                    fontWeight: 800,
+                    color: 'var(--ve-purple)',
+                  }}
+                >
+                  {firstName.charAt(0).toUpperCase()}
+                </div>
+              )}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                style={{ display: 'none' }}
+                onChange={handleAvatarChange}
+              />
               <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
                 style={{
                   position: 'absolute',
                   bottom: 0,
@@ -231,43 +263,43 @@ export default function ProfilePage() {
                   width: 32,
                   height: 32,
                   borderRadius: '50%',
-                  background: '#22C55E',
-                  border: '2px solid #0A0A0A',
+                  background: 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%)',
+                  border: '2px solid var(--ve-surface)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   cursor: 'pointer',
                 }}
               >
-                <Camera size={14} color="#000" />
+                <Camera size={14} color="#FFFFFF" />
               </button>
             </div>
           </div>
 
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 20, padding: '24px 20px' }}>
+          <div style={{ background: 'var(--ve-surface)', border: '1px solid var(--ve-border)', borderRadius: 20, padding: '24px 20px', boxShadow: '0 4px 24px rgba(124,58,237,0.10)' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>First Name</label>
+                  <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>First Name</label>
                   <input className="input-field" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Last Name</label>
+                  <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>Last Name</label>
                   <input className="input-field" value={lastName} onChange={(e) => setLastName(e.target.value)} />
                 </div>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Age</label>
+                  <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>Age</label>
                   <input className="input-field" type="number" value={age} onChange={(e) => setAge(e.target.value)} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Date of Birth</label>
+                  <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>Date of Birth</label>
                   <input className="input-field" type="date" value={dob} onChange={(e) => setDob(e.target.value)} />
                 </div>
               </div>
               <div>
-                <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Sex</label>
+                <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>Sex</label>
                 <select
                   className="input-field"
                   value={sex}
@@ -281,24 +313,24 @@ export default function ProfilePage() {
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>City</label>
+                  <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>City</label>
                   <input className="input-field" value={city} onChange={(e) => setCity(e.target.value)} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>State</label>
+                  <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>State</label>
                   <input className="input-field" value={state} onChange={(e) => setState(e.target.value)} />
                 </div>
               </div>
               <div>
-                <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Email</label>
+                <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>Email</label>
                 <input className="input-field" type="email" value={profile.email} readOnly style={{ opacity: 0.6, cursor: 'not-allowed' }} />
               </div>
               <div>
-                <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Phone</label>
+                <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>Phone</label>
                 <input className="input-field" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
               </div>
               <div>
-                <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>Activity Level</label>
+                <label style={{ fontSize: 12, color: 'var(--ve-text-3)', display: 'block', marginBottom: 6 }}>Activity Level</label>
                 <select
                   className="input-field"
                   value={activityLevel}
@@ -314,12 +346,12 @@ export default function ProfilePage() {
               </div>
 
               {/* BMI badge */}
-              <div style={{ background: '#242424', borderRadius: 12, padding: '14px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ background: 'var(--ve-bg)', borderRadius: 12, padding: '14px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--ve-border)' }}>
                 <div>
-                  <p style={{ fontSize: 11, color: '#A0A0A0', marginBottom: 2 }}>Current BMI</p>
+                  <p style={{ fontSize: 11, color: 'var(--ve-text-3)', marginBottom: 2 }}>Current BMI</p>
                   <p style={{ fontSize: 24, fontWeight: 900, color: bmiColor, lineHeight: 1 }}>{bmi}</p>
                 </div>
-                <div style={{ padding: '6px 14px', borderRadius: 20, background: `${bmiColor}18`, border: `1px solid ${bmiColor}40`, color: bmiColor, fontSize: 12, fontWeight: 600 }}>
+                <div style={{ padding: '6px 14px', borderRadius: 20, background: `${bmiColor}15`, border: `1px solid ${bmiColor}40`, color: bmiColor, fontSize: 12, fontWeight: 600 }}>
                   {bmiCategory}
                 </div>
               </div>
@@ -341,26 +373,26 @@ export default function ProfilePage() {
         <div className="animate-fade-in-up">
           {/* Body SVG silhouette */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
-            <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 20, padding: '20px', display: 'inline-block' }}>
+            <div style={{ background: 'var(--ve-surface)', border: '1px solid var(--ve-border)', borderRadius: 20, padding: '20px', display: 'inline-block', boxShadow: '0 4px 24px rgba(124,58,237,0.10)' }}>
               <svg width="120" height="200" viewBox="0 0 120 200" fill="none">
-                <circle cx="60" cy="22" r="16" stroke="#22C55E" strokeWidth="2" fill="rgba(34,197,94,0.05)" />
-                <line x1="54" y1="38" x2="52" y2="48" stroke="#22C55E" strokeWidth="2" />
-                <line x1="66" y1="38" x2="68" y2="48" stroke="#22C55E" strokeWidth="2" />
-                <path d="M40 50 Q30 60 28 90 L30 130 L90 130 L92 90 Q90 60 80 50 Z" stroke="#22C55E" strokeWidth="2" fill="rgba(34,197,94,0.05)" />
-                <path d="M40 55 Q20 65 18 100 L22 105 Q28 75 42 65 Z" stroke="#22C55E" strokeWidth="2" fill="rgba(34,197,94,0.05)" />
-                <path d="M80 55 Q100 65 102 100 L98 105 Q92 75 78 65 Z" stroke="#22C55E" strokeWidth="2" fill="rgba(34,197,94,0.05)" />
-                <path d="M42 130 Q38 160 36 195 L50 195 Q50 160 55 130 Z" stroke="#22C55E" strokeWidth="2" fill="rgba(34,197,94,0.05)" />
-                <path d="M78 130 Q82 160 84 195 L70 195 Q70 160 65 130 Z" stroke="#22C55E" strokeWidth="2" fill="rgba(34,197,94,0.05)" />
-                <circle cx="60" cy="22" r="3" fill="#22C55E" />
-                <circle cx="60" cy="68" r="3" fill="#F5C518" />
-                <circle cx="60" cy="90" r="3" fill="#F97316" />
-                <circle cx="60" cy="110" r="3" fill="#22C55E" />
-                <circle cx="20" cy="85" r="3" fill="#3B82F6" />
-                <circle cx="100" cy="85" r="3" fill="#3B82F6" />
-                <circle cx="44" cy="165" r="3" fill="#8B5CF6" />
-                <circle cx="76" cy="165" r="3" fill="#8B5CF6" />
+                <circle cx="60" cy="22" r="16" stroke="#7C3AED" strokeWidth="2" fill="rgba(124,58,237,0.05)" />
+                <line x1="54" y1="38" x2="52" y2="48" stroke="#7C3AED" strokeWidth="2" />
+                <line x1="66" y1="38" x2="68" y2="48" stroke="#7C3AED" strokeWidth="2" />
+                <path d="M40 50 Q30 60 28 90 L30 130 L90 130 L92 90 Q90 60 80 50 Z" stroke="#7C3AED" strokeWidth="2" fill="rgba(124,58,237,0.05)" />
+                <path d="M40 55 Q20 65 18 100 L22 105 Q28 75 42 65 Z" stroke="#7C3AED" strokeWidth="2" fill="rgba(124,58,237,0.05)" />
+                <path d="M80 55 Q100 65 102 100 L98 105 Q92 75 78 65 Z" stroke="#7C3AED" strokeWidth="2" fill="rgba(124,58,237,0.05)" />
+                <path d="M42 130 Q38 160 36 195 L50 195 Q50 160 55 130 Z" stroke="#7C3AED" strokeWidth="2" fill="rgba(124,58,237,0.05)" />
+                <path d="M78 130 Q82 160 84 195 L70 195 Q70 160 65 130 Z" stroke="#7C3AED" strokeWidth="2" fill="rgba(124,58,237,0.05)" />
+                <circle cx="60" cy="22" r="3" fill="#7C3AED" />
+                <circle cx="60" cy="68" r="3" fill="#F59E0B" />
+                <circle cx="60" cy="90" r="3" fill="#EC4899" />
+                <circle cx="60" cy="110" r="3" fill="#7C3AED" />
+                <circle cx="20" cy="85" r="3" fill="#8B5CF6" />
+                <circle cx="100" cy="85" r="3" fill="#8B5CF6" />
+                <circle cx="44" cy="165" r="3" fill="#A855F7" />
+                <circle cx="76" cy="165" r="3" fill="#A855F7" />
               </svg>
-              <p style={{ fontSize: 11, color: '#A0A0A0', textAlign: 'center', marginTop: 8 }}>Body Measurements</p>
+              <p style={{ fontSize: 11, color: 'var(--ve-text-3)', textAlign: 'center', marginTop: 8 }}>Body Measurements</p>
             </div>
           </div>
 
@@ -372,11 +404,11 @@ export default function ProfilePage() {
                 ? Math.round((Date.now() - new Date(latest.date).getTime()) / 86400000)
                 : null;
               return (
-                <div key={key} style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 14, padding: '14px' }}>
+                <div key={key} style={{ background: 'var(--ve-surface)', border: '1px solid var(--ve-border)', borderRadius: 14, padding: '14px', boxShadow: '0 2px 12px rgba(124,58,237,0.06)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 }}>
-                    <span style={{ fontSize: 12, color: '#A0A0A0' }}>{label}</span>
+                    <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{label}</span>
                     {daysAgo !== null && (
-                      <span style={{ fontSize: 10, color: '#555' }}>
+                      <span style={{ fontSize: 10, color: 'var(--ve-text-3)', opacity: 0.6 }}>
                         {daysAgo === 0 ? 'Today' : `${daysAgo}d ago`}
                       </span>
                     )}
@@ -391,7 +423,7 @@ export default function ProfilePage() {
                       }
                       style={{ padding: '6px 10px', fontSize: 16, fontWeight: 700, flex: 1 }}
                     />
-                    {unit && <span style={{ fontSize: 12, color: '#A0A0A0', flexShrink: 0 }}>{unit}</span>}
+                    {unit && <span style={{ fontSize: 12, color: 'var(--ve-text-3)', flexShrink: 0 }}>{unit}</span>}
                   </div>
                 </div>
               );
@@ -412,63 +444,63 @@ export default function ProfilePage() {
       {tab === 'progress' && (
         <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {/* Weight trend */}
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 20, padding: '20px' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginBottom: 4 }}>Weight Trend</p>
-            <p style={{ fontSize: 12, color: '#A0A0A0', marginBottom: 16 }}>Last {weightData.length} entries</p>
+          <div style={{ background: 'var(--ve-surface)', border: '1px solid var(--ve-border)', borderRadius: 20, padding: '20px', boxShadow: '0 4px 24px rgba(124,58,237,0.10)' }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 4 }}>Weight Trend</p>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3)', marginBottom: 16 }}>Last {weightData.length} entries</p>
             <ResponsiveContainer width="100%" height={140}>
               <LineChart data={weightData}>
-                <XAxis dataKey="day" tick={{ fill: '#A0A0A0', fontSize: 9 }} axisLine={false} tickLine={false} interval={4} />
-                <YAxis domain={['auto', 'auto']} tick={{ fill: '#A0A0A0', fontSize: 10 }} axisLine={false} tickLine={false} width={36} />
+                <XAxis dataKey="day" tick={{ fill: '#9B8EC4', fontSize: 9 }} axisLine={false} tickLine={false} interval={4} />
+                <YAxis domain={['auto', 'auto']} tick={{ fill: '#9B8EC4', fontSize: 10 }} axisLine={false} tickLine={false} width={36} />
                 <Tooltip
-                  contentStyle={{ background: '#242424', border: '1px solid #2E2E2E', borderRadius: 10, color: '#FFFFFF' }}
+                  contentStyle={{ background: '#FFFFFF', border: '1px solid var(--ve-border)', borderRadius: 10, color: '#1A0A2E' }}
                   // eslint-disable-next-line @typescript-eslint/no-explicit-any
                   formatter={((v: any) => [`${v} kg`, 'Weight']) as any}
                 />
-                <Line type="monotone" dataKey="weight" stroke="#22C55E" strokeWidth={2} dot={false} />
+                <Line type="monotone" dataKey="weight" stroke="#7C3AED" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 12 }}>
               <div>
-                <p style={{ fontSize: 11, color: '#A0A0A0' }}>Start</p>
-                <p style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF' }}>{weightData[0]?.weight ?? '-'} kg</p>
+                <p style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>Start</p>
+                <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--ve-text)' }}>{weightData[0]?.weight ?? '-'} kg</p>
               </div>
               <div style={{ textAlign: 'center' }}>
-                <p style={{ fontSize: 11, color: '#A0A0A0' }}>Change</p>
-                <p style={{ fontSize: 15, fontWeight: 700, color: '#22C55E' }}>
+                <p style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>Change</p>
+                <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--ve-purple)' }}>
                   {weightData.length >= 2
                     ? `${((weightData[weightData.length - 1].weight - weightData[0].weight)).toFixed(1)} kg`
                     : '-'}
                 </p>
               </div>
               <div style={{ textAlign: 'right' }}>
-                <p style={{ fontSize: 11, color: '#A0A0A0' }}>Current</p>
-                <p style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF' }}>{weightData[weightData.length - 1]?.weight ?? '-'} kg</p>
+                <p style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>Current</p>
+                <p style={{ fontSize: 15, fontWeight: 700, color: 'var(--ve-text)' }}>{weightData[weightData.length - 1]?.weight ?? '-'} kg</p>
               </div>
             </div>
           </div>
 
           {/* BMI card */}
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 20, padding: '20px' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginBottom: 16 }}>Body Composition</p>
+          <div style={{ background: 'var(--ve-surface)', border: '1px solid var(--ve-border)', borderRadius: 20, padding: '20px', boxShadow: '0 4px 24px rgba(124,58,237,0.10)' }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 16 }}>Body Composition</p>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
               {[
                 { label: 'BMI', value: String(bmi), unit: '', color: bmiColor },
-                { label: 'Weight', value: String(measurements.weight.slice(-1)[0]?.value ?? profile.weight), unit: 'kg', color: '#FFFFFF' },
-                { label: 'Height', value: String(measurements.height.slice(-1)[0]?.value ?? profile.height), unit: 'cm', color: '#FFFFFF' },
+                { label: 'Weight', value: String(measurements.weight.slice(-1)[0]?.value ?? profile.weight), unit: 'kg', color: 'var(--ve-text)' },
+                { label: 'Height', value: String(measurements.height.slice(-1)[0]?.value ?? profile.height), unit: 'cm', color: 'var(--ve-text)' },
                 { label: 'Category', value: bmiCategory, unit: '', color: bmiColor },
               ].map((item) => (
-                <div key={item.label} style={{ background: '#242424', borderRadius: 12, padding: '14px', textAlign: 'center' }}>
-                  <p style={{ fontSize: 11, color: '#A0A0A0', marginBottom: 4 }}>{item.label}</p>
-                  <p style={{ fontSize: 20, fontWeight: 800, color: item.color }}>{item.value}<span style={{ fontSize: 12, color: '#A0A0A0' }}>{item.unit}</span></p>
+                <div key={item.label} style={{ background: 'var(--ve-bg)', borderRadius: 12, padding: '14px', textAlign: 'center', border: '1px solid var(--ve-border)' }}>
+                  <p style={{ fontSize: 11, color: 'var(--ve-text-3)', marginBottom: 4 }}>{item.label}</p>
+                  <p style={{ fontSize: 20, fontWeight: 800, color: item.color }}>{item.value}<span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{item.unit}</span></p>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Calorie Compliance */}
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 20, padding: '20px' }}>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginBottom: 4 }}>Calorie Compliance</p>
-            <p style={{ fontSize: 12, color: '#A0A0A0', marginBottom: 16 }}>Last 7 days</p>
+          <div style={{ background: 'var(--ve-surface)', border: '1px solid var(--ve-border)', borderRadius: 20, padding: '20px', boxShadow: '0 4px 24px rgba(124,58,237,0.10)' }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 4 }}>Calorie Compliance</p>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3)', marginBottom: 16 }}>Last 7 days</p>
             <div style={{ display: 'flex', gap: 10 }}>
               {calCompliance.map((d) => (
                 <div key={d.day} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
@@ -477,21 +509,25 @@ export default function ProfilePage() {
                       width: '100%',
                       height: 60,
                       borderRadius: 8,
-                      background: d.hit ? '#22C55E' : '#2E2E2E',
+                      background: d.hit
+                        ? 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%)'
+                        : 'var(--ve-bg)',
+                      border: d.hit ? 'none' : '1px solid var(--ve-border)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: 16,
+                      color: d.hit ? '#FFFFFF' : 'var(--ve-text-3)',
                     }}
                   >
                     {d.hit ? '✓' : '×'}
                   </div>
-                  <span style={{ fontSize: 10, color: '#A0A0A0' }}>{d.day}</span>
+                  <span style={{ fontSize: 10, color: 'var(--ve-text-3)' }}>{d.day}</span>
                 </div>
               ))}
             </div>
-            <p style={{ fontSize: 12, color: '#A0A0A0', marginTop: 12 }}>
-              Goal hit <span style={{ color: '#22C55E', fontWeight: 700 }}>{goalHitCount} / 7</span> days this week
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3)', marginTop: 12 }}>
+              Goal hit <span style={{ color: 'var(--ve-purple)', fontWeight: 700 }}>{goalHitCount} / 7</span> days this week
             </p>
           </div>
         </div>

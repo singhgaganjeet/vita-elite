@@ -8,9 +8,9 @@ import StarRating from '@/components/ui/StarRating';
 import { getCoachById } from '@/data/coaches';
 
 const categoryMeta: Record<string, { label: string; color: string }> = {
-  fitness: { label: 'Fitness', color: '#22C55E' },
-  diet: { label: 'Diet', color: '#F5C518' },
-  physio: { label: 'Physiotherapy', color: '#3B82F6' },
+  fitness: { label: 'Fitness', color: '#7C3AED' },
+  diet: { label: 'Diet', color: '#F59E0B' },
+  physio: { label: 'Physiotherapy', color: '#8B5CF6' },
 };
 
 const mockReviews = [
@@ -35,9 +35,9 @@ export default function CoachProfilePage({ params }: PageProps) {
 
   if (!coach) {
     return (
-      <div style={{ padding: '60px 20px', textAlign: 'center', color: '#A0A0A0' }}>
-        <p style={{ fontSize: 18, color: '#FFFFFF', marginBottom: 12 }}>Coach not found</p>
-        <Link href="/coaches" style={{ color: '#22C55E', textDecoration: 'none' }}>← Back to Coaches</Link>
+      <div style={{ padding: '60px 20px', textAlign: 'center', color: 'var(--ve-text-3)' }}>
+        <p style={{ fontSize: 18, color: 'var(--ve-text)', marginBottom: 12 }}>Coach not found</p>
+        <Link href="/coaches" style={{ color: 'var(--ve-purple)', textDecoration: 'none' }}>← Back to Coaches</Link>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function CoachProfilePage({ params }: PageProps) {
     <div style={{ maxWidth: 720, margin: '0 auto', padding: '0 0 120px' }}>
       {/* Back */}
       <div style={{ padding: '20px 20px 0' }}>
-        <Link href="/coaches" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, color: '#A0A0A0', fontSize: 13 }}>
+        <Link href="/coaches" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 6, color: 'var(--ve-text-3)', fontSize: 13 }}>
           <ChevronLeft size={14} /> Back to Coaches
         </Link>
       </div>
@@ -63,16 +63,16 @@ export default function CoachProfilePage({ params }: PageProps) {
       {/* Hero */}
       <div
         style={{
-          background: 'linear-gradient(135deg, #1A1A1A 0%, #0d1f15 100%)',
+          background: 'linear-gradient(135deg, #F8F5FF 0%, #EDE9FE 100%)',
           padding: '28px 20px 24px',
-          borderBottom: '1px solid #2E2E2E',
+          borderBottom: '1px solid var(--ve-border)',
         }}
       >
         <div style={{ display: 'flex', gap: 20, alignItems: 'flex-start' }}>
           <CoachAvatar name={coach.name} category={coach.category} size={80} />
           <div style={{ flex: 1 }}>
-            <h1 style={{ fontSize: 22, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>{coach.name}</h1>
-            <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 10, lineHeight: 1.4 }}>{coach.designation}</p>
+            <h1 style={{ fontSize: 22, fontWeight: 800, color: 'var(--ve-text)', marginBottom: 4 }}>{coach.name}</h1>
+            <p style={{ fontSize: 13, color: 'var(--ve-text-3)', marginBottom: 10, lineHeight: 1.4 }}>{coach.designation}</p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center' }}>
               <span
                 style={{
@@ -80,19 +80,20 @@ export default function CoachProfilePage({ params }: PageProps) {
                   fontWeight: 700,
                   padding: '3px 10px',
                   borderRadius: 10,
-                  background: `${meta.color}18`,
+                  background: `${meta.color}15`,
                   color: meta.color,
+                  border: `1px solid ${meta.color}30`,
                 }}
               >
                 {meta.label}
               </span>
               <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                <CheckCircle size={13} color="#22C55E" />
-                <span style={{ fontSize: 11, color: '#22C55E', fontWeight: 600 }}>Vita Elite Verified</span>
+                <CheckCircle size={13} color="var(--ve-purple)" />
+                <span style={{ fontSize: 11, color: 'var(--ve-purple)', fontWeight: 600 }}>Vita Elite Verified</span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                <MapPin size={12} color="#A0A0A0" />
-                <span style={{ fontSize: 12, color: '#A0A0A0' }}>{coach.city}</span>
+                <MapPin size={12} color="var(--ve-text-3)" />
+                <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{coach.city}</span>
               </div>
             </div>
           </div>
@@ -105,9 +106,11 @@ export default function CoachProfilePage({ params }: PageProps) {
             gridTemplateColumns: 'repeat(4, 1fr)',
             gap: 12,
             marginTop: 24,
-            background: '#242424',
+            background: 'var(--ve-surface)',
             borderRadius: 14,
             padding: '16px 12px',
+            border: '1px solid var(--ve-border)',
+            boxShadow: '0 4px 24px rgba(124,58,237,0.10)',
           }}
         >
           {[
@@ -117,8 +120,8 @@ export default function CoachProfilePage({ params }: PageProps) {
             { label: 'Languages', value: coach.languages.length.toString() },
           ].map((s) => (
             <div key={s.label} style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: 10, color: '#A0A0A0', marginTop: 3 }}>{s.label}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: 'var(--ve-text)', lineHeight: 1 }}>{s.value}</div>
+              <div style={{ fontSize: 10, color: 'var(--ve-text-3)', marginTop: 3 }}>{s.label}</div>
             </div>
           ))}
         </div>
@@ -128,34 +131,38 @@ export default function CoachProfilePage({ params }: PageProps) {
         {/* Tagline */}
         <div
           style={{
-            background: '#242424',
+            background: 'var(--ve-surface)',
             borderRadius: 12,
             padding: '14px 16px',
             marginBottom: 20,
             borderLeft: `3px solid ${meta.color}`,
+            border: '1px solid var(--ve-border)',
+            borderLeftWidth: 3,
+            borderLeftColor: meta.color,
+            boxShadow: '0 4px 24px rgba(124,58,237,0.10)',
           }}
         >
-          <p style={{ fontSize: 14, fontStyle: 'italic', color: '#E0E0E0' }}>&quot;{coach.tagline}&quot;</p>
+          <p style={{ fontSize: 14, fontStyle: 'italic', color: 'var(--ve-text-2)' }}>&quot;{coach.tagline}&quot;</p>
         </div>
 
         {/* About */}
         <section style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 12 }}>About</h2>
-          <p style={{ fontSize: 14, color: '#A0A0A0', lineHeight: 1.7 }}>{coach.bio}</p>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 12 }}>About</h2>
+          <p style={{ fontSize: 14, color: 'var(--ve-text-3)', lineHeight: 1.7 }}>{coach.bio}</p>
         </section>
 
         {/* Education */}
         <section style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 12 }}>Education</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 12 }}>Education</h2>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <CheckCircle size={14} color="#22C55E" />
-            <span style={{ fontSize: 13, color: '#E0E0E0' }}>{coach.education}</span>
+            <CheckCircle size={14} color="var(--ve-purple)" />
+            <span style={{ fontSize: 13, color: 'var(--ve-text-2)' }}>{coach.education}</span>
           </div>
         </section>
 
         {/* Certifications */}
         <section style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 12 }}>Certifications</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 12 }}>Certifications</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {coach.certifications.map((cert) => (
               <span
@@ -164,9 +171,9 @@ export default function CoachProfilePage({ params }: PageProps) {
                   fontSize: 11,
                   padding: '5px 11px',
                   borderRadius: 8,
-                  background: '#242424',
-                  color: '#E0E0E0',
-                  border: '1px solid #2E2E2E',
+                  background: 'var(--ve-bg)',
+                  color: 'var(--ve-text-2)',
+                  border: '1px solid var(--ve-border)',
                 }}
               >
                 {cert}
@@ -177,7 +184,7 @@ export default function CoachProfilePage({ params }: PageProps) {
 
         {/* Specialisations */}
         <section style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 12 }}>Specialisations</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 12 }}>Specialisations</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {coach.specialisations.map((spec) => (
               <span
@@ -186,7 +193,7 @@ export default function CoachProfilePage({ params }: PageProps) {
                   fontSize: 11,
                   padding: '5px 12px',
                   borderRadius: 20,
-                  background: `${meta.color}15`,
+                  background: `${meta.color}12`,
                   color: meta.color,
                   border: `1px solid ${meta.color}30`,
                   fontWeight: 500,
@@ -200,12 +207,12 @@ export default function CoachProfilePage({ params }: PageProps) {
 
         {/* Languages */}
         <section style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 12 }}>Languages</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 12 }}>Languages</h2>
           <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
             {coach.languages.map((lang) => (
-              <div key={lang} style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#242424', borderRadius: 8, padding: '5px 11px', border: '1px solid #2E2E2E' }}>
-                <Globe size={11} color="#A0A0A0" />
-                <span style={{ fontSize: 12, color: '#E0E0E0' }}>{lang}</span>
+              <div key={lang} style={{ display: 'flex', alignItems: 'center', gap: 6, background: 'var(--ve-bg)', borderRadius: 8, padding: '5px 11px', border: '1px solid var(--ve-border)' }}>
+                <Globe size={11} color="var(--ve-text-3)" />
+                <span style={{ fontSize: 12, color: 'var(--ve-text-2)' }}>{lang}</span>
               </div>
             ))}
           </div>
@@ -213,7 +220,7 @@ export default function CoachProfilePage({ params }: PageProps) {
 
         {/* Availability */}
         <section style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 12 }}>Availability</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 12 }}>Availability</h2>
           <div style={{ display: 'flex', gap: 8 }}>
             {DAYS.map((day) => {
               const available = coach.availability.includes(DAY_FULL[day]);
@@ -225,9 +232,9 @@ export default function CoachProfilePage({ params }: PageProps) {
                     textAlign: 'center',
                     padding: '8px 0',
                     borderRadius: 8,
-                    background: available ? 'rgba(34,197,94,0.15)' : '#242424',
-                    border: `1px solid ${available ? 'rgba(34,197,94,0.3)' : '#2E2E2E'}`,
-                    color: available ? '#22C55E' : '#555',
+                    background: available ? 'rgba(124,58,237,0.10)' : 'var(--ve-bg)',
+                    border: `1px solid ${available ? 'rgba(124,58,237,0.30)' : 'var(--ve-border)'}`,
+                    color: available ? 'var(--ve-purple)' : 'var(--ve-text-3)',
                     fontSize: 11,
                     fontWeight: available ? 700 : 400,
                   }}
@@ -242,24 +249,24 @@ export default function CoachProfilePage({ params }: PageProps) {
         {/* Reviews */}
         <section style={{ marginBottom: 24 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 16 }}>
-            <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF' }}>Reviews</h2>
+            <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)' }}>Reviews</h2>
             <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-              <Star size={13} color="#F5C518" fill="#F5C518" />
-              <span style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>{coach.rating}</span>
-              <span style={{ fontSize: 12, color: '#A0A0A0' }}>({coach.sessions} reviews)</span>
+              <Star size={13} color="#F59E0B" fill="#F59E0B" />
+              <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--ve-text)' }}>{coach.rating}</span>
+              <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>({coach.sessions} reviews)</span>
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             {mockReviews.map((review, i) => (
-              <div key={i} style={{ background: '#242424', borderRadius: 14, padding: '16px' }}>
+              <div key={i} style={{ background: 'var(--ve-surface)', borderRadius: 14, padding: '16px', border: '1px solid var(--ve-border)', boxShadow: '0 4px 24px rgba(124,58,237,0.10)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
                   <div>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF' }}>{review.name}</span>
-                    <span style={{ fontSize: 11, color: '#A0A0A0', marginLeft: 8 }}>{review.date}</span>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--ve-text)' }}>{review.name}</span>
+                    <span style={{ fontSize: 11, color: 'var(--ve-text-3)', marginLeft: 8 }}>{review.date}</span>
                   </div>
                   <StarRating rating={review.rating} size={12} />
                 </div>
-                <p style={{ fontSize: 13, color: '#A0A0A0', lineHeight: 1.6 }}>{review.text}</p>
+                <p style={{ fontSize: 13, color: 'var(--ve-text-3)', lineHeight: 1.6 }}>{review.text}</p>
               </div>
             ))}
           </div>
@@ -267,11 +274,11 @@ export default function CoachProfilePage({ params }: PageProps) {
 
         {/* Pricing */}
         <section style={{ marginBottom: 24 }}>
-          <h2 style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 8 }}>Pricing</h2>
+          <h2 style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 8 }}>Pricing</h2>
           <div
             style={{
-              background: 'rgba(245,197,24,0.1)',
-              border: '1px solid rgba(245,197,24,0.3)',
+              background: 'rgba(245,158,11,0.08)',
+              border: '1px solid rgba(245,158,11,0.30)',
               borderRadius: 12,
               padding: '10px 16px',
               marginBottom: 16,
@@ -280,27 +287,30 @@ export default function CoachProfilePage({ params }: PageProps) {
               gap: 8,
             }}
           >
-            <Clock size={14} color="#F5C518" />
-            <span style={{ fontSize: 13, color: '#F5C518', fontWeight: 600 }}>Trial: 1 Day Home Session — ₹100</span>
-            <span style={{ fontSize: 11, color: '#A0A0A0' }}>(logistics fee only)</span>
+            <Clock size={14} color="#F59E0B" />
+            <span style={{ fontSize: 13, color: '#F59E0B', fontWeight: 600 }}>Trial: 1 Day Home Session — ₹100</span>
+            <span style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>(logistics fee only)</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {plans.map((plan) => (
               <div
                 key={plan.duration}
                 style={{
-                  background: '#242424',
-                  border: plan.badge === 'Best Value' ? '1px solid rgba(245,197,24,0.4)' : '1px solid #2E2E2E',
+                  background: 'var(--ve-surface)',
+                  border: plan.badge === 'Best Value'
+                    ? '1px solid rgba(124,58,237,0.40)'
+                    : '1px solid var(--ve-border)',
                   borderRadius: 14,
                   padding: '14px 16px',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  boxShadow: plan.badge === 'Best Value' ? '0 4px 24px rgba(124,58,237,0.10)' : 'none',
                 }}
               >
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: '#FFFFFF' }}>{plan.duration}</span>
+                    <span style={{ fontSize: 14, fontWeight: 600, color: 'var(--ve-text)' }}>{plan.duration}</span>
                     {plan.badge && (
                       <span
                         style={{
@@ -308,8 +318,10 @@ export default function CoachProfilePage({ params }: PageProps) {
                           fontWeight: 700,
                           padding: '2px 8px',
                           borderRadius: 8,
-                          background: plan.badge === 'Best Value' ? 'rgba(245,197,24,0.2)' : 'rgba(34,197,94,0.15)',
-                          color: plan.badge === 'Best Value' ? '#F5C518' : '#22C55E',
+                          background: plan.badge === 'Best Value'
+                            ? 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%)'
+                            : 'rgba(124,58,237,0.12)',
+                          color: plan.badge === 'Best Value' ? '#FFFFFF' : 'var(--ve-purple)',
                         }}
                       >
                         {plan.badge}
@@ -317,15 +329,15 @@ export default function CoachProfilePage({ params }: PageProps) {
                     )}
                   </div>
                   {plan.original && (
-                    <span style={{ fontSize: 11, color: '#555', textDecoration: 'line-through' }}>
+                    <span style={{ fontSize: 11, color: 'var(--ve-text-3)', textDecoration: 'line-through' }}>
                       ₹{plan.original.toLocaleString('en-IN')}/mo
                     </span>
                   )}
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: 20, fontWeight: 800, color: '#FFFFFF' }}>
+                  <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--ve-text)' }}>
                     ₹{plan.price.toLocaleString('en-IN')}
-                    <span style={{ fontSize: 12, color: '#A0A0A0', fontWeight: 400 }}>/mo</span>
+                    <span style={{ fontSize: 12, color: 'var(--ve-text-3)', fontWeight: 400 }}>/mo</span>
                   </div>
                 </div>
               </div>
@@ -341,12 +353,13 @@ export default function CoachProfilePage({ params }: PageProps) {
           bottom: 0,
           left: 0,
           right: 0,
-          background: '#1A1A1A',
-          borderTop: '1px solid #2E2E2E',
+          background: 'var(--ve-surface)',
+          borderTop: '1px solid var(--ve-border)',
           padding: '14px 20px',
           display: 'flex',
           gap: 12,
           zIndex: 60,
+          boxShadow: '0 -4px 24px rgba(124,58,237,0.08)',
         }}
         className="lg:ml-[240px]"
       >

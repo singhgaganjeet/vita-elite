@@ -1,18 +1,6 @@
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  variable: '--font-space-grotesk',
-  display: 'swap',
-});
+import SessionProvider from '@/components/SessionProvider';
 
 export const metadata: Metadata = {
   title: 'Vita Elite — Your Elite Health. At Your Door.',
@@ -33,14 +21,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
-      style={{ background: '#0A0A0A' }}
+      className="h-full antialiased"
+      style={{ background: 'var(--ve-bg)' }}
     >
       <body
         className="min-h-full"
-        style={{ background: '#0A0A0A', color: '#FFFFFF', fontFamily: 'var(--font-inter), system-ui, sans-serif' }}
+        style={{ background: 'var(--ve-bg)', color: 'var(--ve-text)' }}
       >
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

@@ -18,23 +18,23 @@ export default function MacroBar({
   fatsGoal = 70,
 }: MacroBarProps) {
   const macros = [
-    { label: 'Protein', value: protein, goal: proteinGoal, color: '#22C55E', unit: 'g' },
-    { label: 'Carbs', value: carbs, goal: carbsGoal, color: '#F5C518', unit: 'g' },
-    { label: 'Fats', value: fats, goal: fatsGoal, color: '#F97316', unit: 'g' },
+    { label: 'Protein', value: protein, goal: proteinGoal, color: '#7C3AED', unit: 'g' },
+    { label: 'Carbs',   value: carbs,   goal: carbsGoal,   color: '#A855F7', unit: 'g' },
+    { label: 'Fats',    value: fats,    goal: fatsGoal,    color: '#EC4899', unit: 'g' },
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 10, width: '100%' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, width: '100%' }}>
       {macros.map((m) => (
         <div key={m.label}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-            <span style={{ fontSize: 12, color: '#A0A0A0', fontWeight: 500 }}>{m.label}</span>
-            <span style={{ fontSize: 12, color: '#FFFFFF', fontWeight: 600 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 5 }}>
+            <span style={{ fontSize: 12, color: '#9B8EC4', fontWeight: 500 }}>{m.label}</span>
+            <span style={{ fontSize: 12, color: '#1A0A2E', fontWeight: 600 }}>
               {m.value}{m.unit}
-              <span style={{ color: '#A0A0A0', fontWeight: 400 }}> / {m.goal}{m.unit}</span>
+              <span style={{ color: '#9B8EC4', fontWeight: 400 }}> / {m.goal}{m.unit}</span>
             </span>
           </div>
-          <div style={{ height: 6, borderRadius: 3, background: '#2E2E2E', overflow: 'hidden' }}>
+          <div style={{ height: 6, borderRadius: 3, background: '#E8E0FA', overflow: 'hidden' }}>
             <div
               style={{
                 height: '100%',

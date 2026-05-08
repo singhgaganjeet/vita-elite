@@ -20,34 +20,62 @@ export default function CoachEarningsPage() {
 
   return (
     <div style={{ padding: '28px 24px', maxWidth: 800 }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>Earnings</h1>
-      <p style={{ fontSize: 13, color: '#7A8FA6', marginBottom: 24 }}>Your revenue overview</p>
+      <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ve-text)', marginBottom: 4 }}>Earnings</h1>
+      <p style={{ fontSize: 13, color: 'var(--ve-text-3)', marginBottom: 24 }}>Your revenue overview</p>
 
       {/* Top stats */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14, marginBottom: 28 }}>
         {[
-          { label: 'Total Earned',     value: `₹${(totalEarned/1000).toFixed(0)}k`, icon: IndianRupee, color: '#22C55E', bg: 'rgba(34,197,94,0.1)' },
-          { label: 'This Month',       value: `₹${(thisMonth.revenue/1000).toFixed(0)}k`, icon: TrendingUp, color: '#3B82F6', bg: 'rgba(59,130,246,0.1)' },
-          { label: 'Sessions Done',    value: completed.length, icon: CheckCircle, color: '#8B5CF6', bg: 'rgba(139,92,246,0.1)' },
+          { label: 'Total Earned',  value: `₹${(totalEarned / 1000).toFixed(0)}k`,      icon: IndianRupee, gradient: true  },
+          { label: 'This Month',    value: `₹${(thisMonth.revenue / 1000).toFixed(0)}k`, icon: TrendingUp,  gradient: true  },
+          { label: 'Sessions Done', value: completed.length,                              icon: CheckCircle, gradient: false },
         ].map(s => {
           const Icon = s.icon;
           return (
-            <div key={s.label} style={{ background: '#0F1923', border: '1px solid #1E2A38', borderRadius: 16, padding: '18px 16px' }}>
-              <div style={{ width: 36, height: 36, borderRadius: 10, background: s.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}>
-                <Icon size={17} color={s.color} />
+            <div key={s.label} style={{
+              background: 'var(--ve-surface)',
+              border: '1px solid var(--ve-border)',
+              borderRadius: 16, padding: '18px 16px',
+              boxShadow: 'var(--ve-shadow-sm)',
+            }}>
+              <div style={{
+                width: 36, height: 36, borderRadius: 10,
+                background: 'rgba(124,58,237,0.08)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                marginBottom: 12,
+              }}>
+                <Icon size={17} color="var(--ve-purple)" />
               </div>
-              <p style={{ fontSize: 26, fontWeight: 900, color: '#FFFFFF', lineHeight: 1, marginBottom: 4 }}>{s.value}</p>
-              <p style={{ fontSize: 12, color: '#7A8FA6' }}>{s.label}</p>
+              <p style={{
+                fontSize: 26, fontWeight: 900, lineHeight: 1, marginBottom: 4,
+                ...(s.gradient ? {
+                  background: 'var(--ve-gradient)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  backgroundClip: 'text',
+                } : { color: 'var(--ve-text)' }),
+              }}>{s.value}</p>
+              <p style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{s.label}</p>
             </div>
           );
         })}
       </div>
 
       {/* Revenue bar chart */}
-      <div style={{ background: '#0F1923', border: '1px solid #1E2A38', borderRadius: 18, padding: '20px 24px', marginBottom: 20 }}>
+      <div style={{
+        background: 'var(--ve-surface)',
+        border: '1px solid var(--ve-border)',
+        borderRadius: 18, padding: '20px 24px', marginBottom: 20,
+        boxShadow: 'var(--ve-shadow-sm)',
+      }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-          <span style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>Monthly Revenue</span>
-          <span style={{ fontSize: 12, color: growth >= 0 ? '#22C55E' : '#EF4444', fontWeight: 700 }}>
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text)' }}>Monthly Revenue</span>
+          <span style={{
+            fontSize: 12, fontWeight: 700,
+            color: growth >= 0 ? 'var(--ve-success)' : 'var(--ve-danger)',
+            background: growth >= 0 ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+            borderRadius: 20, padding: '3px 10px',
+          }}>
             {growth >= 0 ? '+' : ''}{growth}% vs last month
           </span>
         </div>
@@ -57,13 +85,25 @@ export default function CoachEarningsPage() {
             const isLast = i === REVENUE_DATA.length - 1;
             return (
               <div key={r.month} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontSize: 10, color: isLast ? '#3B82F6' : '#7A8FA6', fontWeight: isLast ? 700 : 400 }}>
+                <span style={{
+                  fontSize: 10,
+                  color: isLast ? 'var(--ve-purple)' : 'var(--ve-text-3)',
+                  fontWeight: isLast ? 700 : 400,
+                }}>
                   ₹{(r.revenue / 1000).toFixed(0)}k
                 </span>
-                <div style={{ width: '100%', height, borderRadius: '6px 6px 0 0', background: isLast ? '#3B82F6' : '#1E2A38', transition: 'height 0.3s', position: 'relative' }}>
-                  {isLast && <div style={{ position: 'absolute', inset: 0, borderRadius: '6px 6px 0 0', background: 'linear-gradient(to top, #3B82F6, #60A5FA)', opacity: 0.9 }} />}
-                </div>
-                <span style={{ fontSize: 11, color: isLast ? '#3B82F6' : '#7A8FA6', fontWeight: isLast ? 700 : 400 }}>{r.month}</span>
+                <div style={{
+                  width: '100%', height, borderRadius: '6px 6px 0 0',
+                  background: isLast ? 'var(--ve-gradient)' : 'var(--ve-surface-2)',
+                  border: isLast ? 'none' : '1px solid var(--ve-border)',
+                  transition: 'height 0.3s',
+                  boxShadow: isLast ? 'var(--ve-shadow)' : 'none',
+                }} />
+                <span style={{
+                  fontSize: 11,
+                  color: isLast ? 'var(--ve-purple)' : 'var(--ve-text-3)',
+                  fontWeight: isLast ? 700 : 400,
+                }}>{r.month}</span>
               </div>
             );
           })}
@@ -71,24 +111,46 @@ export default function CoachEarningsPage() {
       </div>
 
       {/* Recent transactions */}
-      <div style={{ background: '#0F1923', border: '1px solid #1E2A38', borderRadius: 18, padding: '20px 24px' }}>
+      <div style={{
+        background: 'var(--ve-surface)',
+        border: '1px solid var(--ve-border)',
+        borderRadius: 18, padding: '20px 24px',
+        boxShadow: 'var(--ve-shadow-sm)',
+      }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-          <Calendar size={14} color="#3B82F6" />
-          <span style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF' }}>Recent Transactions</span>
+          <Calendar size={14} color="var(--ve-purple)" />
+          <span style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text)' }}>Recent Transactions</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
           {completed.slice(-6).reverse().map(b => (
-            <div key={b.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', background: '#141E2B', borderRadius: 12 }}>
+            <div key={b.id} style={{
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              padding: '10px 14px',
+              background: 'var(--ve-surface-2)',
+              border: '1px solid var(--ve-border)',
+              borderRadius: 12,
+            }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <div style={{ width: 34, height: 34, borderRadius: '50%', background: 'rgba(59,130,246,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, color: '#3B82F6' }}>
+                <div style={{
+                  width: 34, height: 34, borderRadius: '50%',
+                  background: 'rgba(124,58,237,0.10)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 11, fontWeight: 700, color: 'var(--ve-purple)',
+                }}>
                   {b.clientAvatar}
                 </div>
                 <div>
-                  <p style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF' }}>{b.clientName}</p>
-                  <p style={{ fontSize: 11, color: '#7A8FA6' }}>{b.date} · Session #{b.sessionNumber}</p>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ve-text)' }}>{b.clientName}</p>
+                  <p style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>{b.date} · Session #{b.sessionNumber}</p>
                 </div>
               </div>
-              <span style={{ fontSize: 15, fontWeight: 800, color: '#22C55E' }}>+₹{b.amount.toLocaleString()}</span>
+              <span style={{
+                fontSize: 15, fontWeight: 800,
+                background: 'var(--ve-gradient)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+              }}>+₹{b.amount.toLocaleString()}</span>
             </div>
           ))}
         </div>

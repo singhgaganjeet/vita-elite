@@ -32,11 +32,11 @@ interface AnalysisResult {
 
 function MacroPill({ label, value, unit, color }: { label: string; value: number; unit: string; color: string }) {
   return (
-    <div style={{ background: '#242424', borderRadius: 12, padding: '10px 8px', textAlign: 'center' }}>
+    <div style={{ background: 'var(--ve-surface-2, #F3F0FF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 12, padding: '10px 8px', textAlign: 'center' }}>
       <div style={{ fontSize: 17, fontWeight: 800, color, lineHeight: 1.1 }}>
-        {value}<span style={{ fontSize: 10, color: '#A0A0A0', fontWeight: 400 }}>{unit}</span>
+        {value}<span style={{ fontSize: 10, color: 'var(--ve-text-3, #9B8EC4)', fontWeight: 400 }}>{unit}</span>
       </div>
-      <div style={{ fontSize: 10, color: '#A0A0A0', marginTop: 3 }}>{label}</div>
+      <div style={{ fontSize: 10, color: 'var(--ve-text-3, #9B8EC4)', marginTop: 3 }}>{label}</div>
     </div>
   );
 }
@@ -197,14 +197,18 @@ export default function FoodScannerPage() {
     });
   };
 
-  if (!mounted) return <div style={{ padding: '24px 20px' }}><div style={{ height: 40, background: '#1A1A1A', borderRadius: 12, width: '50%' }} /></div>;
+  if (!mounted) return (
+    <div style={{ padding: '24px 20px', background: 'var(--ve-bg, #F8F5FF)', minHeight: '100vh' }}>
+      <div style={{ height: 40, background: 'var(--ve-surface-2, #F3F0FF)', borderRadius: 12, width: '50%' }} />
+    </div>
+  );
 
   return (
-    <div style={{ padding: '24px 20px', maxWidth: 620, margin: '0 auto' }}>
+    <div style={{ padding: '24px 20px', maxWidth: 620, margin: '0 auto', background: 'var(--ve-bg, #F8F5FF)', minHeight: '100vh' }}>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>Food Analyser</h1>
-        <p style={{ fontSize: 14, color: '#A0A0A0' }}>
+        <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ve-text, #1A0A2E)', marginBottom: 4 }}>Food Analyser</h1>
+        <p style={{ fontSize: 14, color: 'var(--ve-text-3, #9B8EC4)' }}>
           Take a photo of your meal — AI will identify every item and estimate the calories
         </p>
       </div>
@@ -212,10 +216,17 @@ export default function FoodScannerPage() {
       {/* ── CAMERA / CAPTURE AREA ── */}
       {(step === 'idle' || step === 'camera' || step === 'captured' || step === 'analysing') && (
         <div style={{
-          background: '#0D0D0D', border: '1px solid #2E2E2E', borderRadius: 24,
-          overflow: 'hidden', marginBottom: 20,
+          background: 'var(--ve-surface, #FFFFFF)',
+          border: '1px solid var(--ve-border, #E8E0FA)',
+          borderRadius: 24,
+          overflow: 'hidden',
+          marginBottom: 20,
           minHeight: step === 'idle' ? 260 : 340,
-          position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
+          position: 'relative',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 4px 24px rgba(124,58,237,0.08)',
         }}>
           {/* Live camera video */}
           <video
@@ -245,22 +256,22 @@ export default function FoodScannerPage() {
           {step === 'analysing' && (
             <div style={{
               position: 'absolute', inset: 0,
-              background: 'rgba(0,0,0,0.88)',
+              background: 'rgba(248,245,255,0.93)',
               display: 'flex', flexDirection: 'column',
               alignItems: 'center', justifyContent: 'center', gap: 20, padding: 32,
             }}>
               {capturedImage && (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={capturedImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.15, filter: 'blur(4px)' }} />
+                <img src={capturedImage} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.08, filter: 'blur(4px)' }} />
               )}
               <div style={{ position: 'relative', zIndex: 1, textAlign: 'center' }}>
-                <Loader2 size={40} color="#22C55E" style={{ animation: 'spin 1s linear infinite', marginBottom: 16 }} />
-                <p style={{ color: '#FFFFFF', fontSize: 16, fontWeight: 700, marginBottom: 6 }}>Analysing your meal…</p>
-                <p style={{ color: '#A0A0A0', fontSize: 13, marginBottom: 20 }}>AI is identifying food items and estimating nutrition</p>
-                <div style={{ width: 240, background: '#2E2E2E', borderRadius: 99, height: 6, margin: '0 auto' }}>
-                  <div style={{ height: 6, borderRadius: 99, background: 'linear-gradient(90deg,#22C55E,#16A34A)', width: `${analyseProgress}%`, transition: 'width 0.4s ease' }} />
+                <Loader2 size={40} color="#7C3AED" style={{ animation: 'spin 1s linear infinite', marginBottom: 16 }} />
+                <p style={{ color: 'var(--ve-text, #1A0A2E)', fontSize: 16, fontWeight: 700, marginBottom: 6 }}>Analysing your meal…</p>
+                <p style={{ color: 'var(--ve-text-3, #9B8EC4)', fontSize: 13, marginBottom: 20 }}>AI is identifying food items and estimating nutrition</p>
+                <div style={{ width: 240, background: 'var(--ve-border, #E8E0FA)', borderRadius: 99, height: 6, margin: '0 auto' }}>
+                  <div style={{ height: 6, borderRadius: 99, background: 'linear-gradient(90deg, #7C3AED, #EC4899)', width: `${analyseProgress}%`, transition: 'width 0.4s ease' }} />
                 </div>
-                <p style={{ color: '#606060', fontSize: 11, marginTop: 8 }}>{Math.round(analyseProgress)}%</p>
+                <p style={{ color: 'var(--ve-text-3, #9B8EC4)', fontSize: 11, marginTop: 8 }}>{Math.round(analyseProgress)}%</p>
               </div>
             </div>
           )}
@@ -270,24 +281,26 @@ export default function FoodScannerPage() {
             <div style={{ textAlign: 'center', padding: '40px 24px' }}>
               <div style={{
                 width: 80, height: 80, borderRadius: '50%',
-                background: 'rgba(34,197,94,0.08)', border: '1px solid rgba(34,197,94,0.2)',
+                background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.2)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px',
               }}>
-                <Utensils size={34} color="#22C55E" />
+                <Utensils size={34} color="#7C3AED" />
               </div>
-              <p style={{ fontSize: 16, fontWeight: 700, color: '#FFFFFF', marginBottom: 6 }}>
+              <p style={{ fontSize: 16, fontWeight: 700, color: 'var(--ve-text, #1A0A2E)', marginBottom: 6 }}>
                 Photograph your meal
               </p>
-              <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 28, lineHeight: 1.6 }}>
+              <p style={{ fontSize: 13, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 28, lineHeight: 1.6 }}>
                 Point at your plate or bowl.<br />AI will identify every food item and tell you the calories.
               </p>
               <button
                 onClick={startCamera}
                 style={{
-                  background: '#22C55E', border: 'none', borderRadius: 24,
-                  padding: '13px 36px', color: '#000', fontSize: 14, fontWeight: 800,
+                  background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                  border: 'none', borderRadius: 24,
+                  padding: '13px 36px', color: '#FFFFFF', fontSize: 14, fontWeight: 800,
                   cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8,
                   letterSpacing: '0.2px',
+                  boxShadow: '0 4px 16px rgba(124,58,237,0.25)',
                 }}
               >
                 <Camera size={17} /> Open Camera
@@ -300,15 +313,15 @@ export default function FoodScannerPage() {
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none' }}>
               {/* Corner guides */}
               {[
-                { top: 20, left: 20, borderTop: '3px solid rgba(34,197,94,0.8)', borderLeft: '3px solid rgba(34,197,94,0.8)' },
-                { top: 20, right: 20, borderTop: '3px solid rgba(34,197,94,0.8)', borderRight: '3px solid rgba(34,197,94,0.8)' },
-                { bottom: 80, left: 20, borderBottom: '3px solid rgba(34,197,94,0.8)', borderLeft: '3px solid rgba(34,197,94,0.8)' },
-                { bottom: 80, right: 20, borderBottom: '3px solid rgba(34,197,94,0.8)', borderRight: '3px solid rgba(34,197,94,0.8)' },
+                { top: 20, left: 20, borderTop: '3px solid rgba(124,58,237,0.8)', borderLeft: '3px solid rgba(124,58,237,0.8)' },
+                { top: 20, right: 20, borderTop: '3px solid rgba(124,58,237,0.8)', borderRight: '3px solid rgba(124,58,237,0.8)' },
+                { bottom: 80, left: 20, borderBottom: '3px solid rgba(124,58,237,0.8)', borderLeft: '3px solid rgba(124,58,237,0.8)' },
+                { bottom: 80, right: 20, borderBottom: '3px solid rgba(124,58,237,0.8)', borderRight: '3px solid rgba(124,58,237,0.8)' },
               ].map((style, i) => (
                 <div key={i} style={{ position: 'absolute', width: 28, height: 28, borderRadius: 3, ...style }} />
               ))}
-              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, textAlign: 'center', padding: '10px 16px 12px', background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)' }}>
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)' }}>Frame your entire plate • Ensure good lighting</p>
+              <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, textAlign: 'center', padding: '10px 16px 12px', background: 'linear-gradient(to top, rgba(248,245,255,0.7), transparent)' }}>
+                <p style={{ fontSize: 12, color: 'rgba(91,74,138,0.9)' }}>Frame your entire plate • Ensure good lighting</p>
               </div>
             </div>
           )}
@@ -321,21 +334,22 @@ export default function FoodScannerPage() {
             }}>
               <button
                 onClick={reset}
-                style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)', borderRadius: '50%', width: 44, height: 44, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
               >
-                <X size={18} color="#FFFFFF" />
+                <X size={18} color="#7C3AED" />
               </button>
               {/* Shutter */}
               <button
                 onClick={capturePhoto}
                 style={{
                   width: 70, height: 70, borderRadius: '50%',
-                  background: '#FFFFFF', border: '5px solid rgba(255,255,255,0.4)',
-                  cursor: 'pointer', boxShadow: '0 0 0 3px rgba(255,255,255,0.15)',
+                  background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                  border: '5px solid rgba(124,58,237,0.2)',
+                  cursor: 'pointer', boxShadow: '0 0 0 3px rgba(124,58,237,0.15)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                 }}
               >
-                <Camera size={24} color="#111" />
+                <Camera size={24} color="#FFFFFF" />
               </button>
               <div style={{ width: 44 }} />
             </div>
@@ -349,9 +363,10 @@ export default function FoodScannerPage() {
           <button
             onClick={startCamera}
             style={{
-              flex: 1, padding: 13, background: '#1A1A1A',
-              border: '1px solid #2E2E2E', borderRadius: 14,
-              color: '#A0A0A0', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              flex: 1, padding: 13,
+              background: 'var(--ve-surface, #FFFFFF)',
+              border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 14,
+              color: 'var(--ve-text-2, #5B4A8A)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             }}
           >
@@ -360,10 +375,12 @@ export default function FoodScannerPage() {
           <button
             onClick={analysePhoto}
             style={{
-              flex: 2, padding: 13, background: '#22C55E',
+              flex: 2, padding: 13,
+              background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
               border: 'none', borderRadius: 14,
-              color: '#000', fontSize: 14, fontWeight: 800, cursor: 'pointer',
+              color: '#FFFFFF', fontSize: 14, fontWeight: 800, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              boxShadow: '0 4px 14px rgba(124,58,237,0.25)',
             }}
           >
             <Utensils size={15} /> Analyse Meal
@@ -375,23 +392,25 @@ export default function FoodScannerPage() {
       {step === 'error' && (
         <div>
           <div style={{
-            background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.3)',
+            background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)',
             borderRadius: 16, padding: '20px', marginBottom: 16,
             display: 'flex', gap: 14, alignItems: 'flex-start',
           }}>
             <AlertCircle size={20} color="#EF4444" style={{ flexShrink: 0, marginTop: 1 }} />
             <div>
               <p style={{ fontSize: 14, fontWeight: 700, color: '#EF4444', marginBottom: 6 }}>Analysis failed</p>
-              <p style={{ fontSize: 13, color: '#E0E0E0', lineHeight: 1.6 }}>{error}</p>
+              <p style={{ fontSize: 13, color: 'var(--ve-text-2, #5B4A8A)', lineHeight: 1.6 }}>{error}</p>
             </div>
           </div>
           <button
             onClick={reset}
             style={{
-              width: '100%', padding: 13, background: '#22C55E',
+              width: '100%', padding: 13,
+              background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
               border: 'none', borderRadius: 14,
-              color: '#000', fontSize: 14, fontWeight: 700, cursor: 'pointer',
+              color: '#FFFFFF', fontSize: 14, fontWeight: 700, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              boxShadow: '0 4px 14px rgba(124,58,237,0.25)',
             }}
           >
             <RefreshCw size={15} /> Try Again
@@ -404,7 +423,7 @@ export default function FoodScannerPage() {
         <div className="animate-fade-in-up">
           {/* Captured photo thumbnail */}
           {capturedImage && (
-            <div style={{ marginBottom: 16, borderRadius: 16, overflow: 'hidden', border: '1px solid #2E2E2E', maxHeight: 200 }}>
+            <div style={{ marginBottom: 16, borderRadius: 16, overflow: 'hidden', border: '1px solid var(--ve-border, #E8E0FA)', maxHeight: 200 }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={capturedImage} alt="Analysed meal" style={{ width: '100%', maxHeight: 200, objectFit: 'cover', display: 'block' }} />
             </div>
@@ -412,26 +431,26 @@ export default function FoodScannerPage() {
 
           {/* Total calories hero */}
           <div style={{
-            background: 'linear-gradient(135deg, rgba(34,197,94,0.12), rgba(22,163,74,0.06))',
-            border: '1px solid rgba(34,197,94,0.25)',
+            background: 'linear-gradient(135deg, rgba(124,58,237,0.08), rgba(236,72,153,0.05))',
+            border: '1px solid rgba(124,58,237,0.18)',
             borderRadius: 20, padding: '22px 20px', marginBottom: 14, textAlign: 'center',
           }}>
-            <p style={{ fontSize: 12, color: '#A0A0A0', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6 }}>Total Estimated Calories</p>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 6 }}>Total Estimated Calories</p>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: 14 }}>
-              <Flame size={28} color="#22C55E" />
-              <span style={{ fontSize: 52, fontWeight: 900, color: '#22C55E', lineHeight: 1 }}>{result.totalCalories}</span>
-              <span style={{ fontSize: 16, color: '#A0A0A0', alignSelf: 'flex-end', paddingBottom: 6 }}>kcal</span>
+              <Flame size={28} color="#7C3AED" />
+              <span style={{ fontSize: 52, fontWeight: 900, color: 'var(--ve-purple, #7C3AED)', lineHeight: 1 }}>{result.totalCalories}</span>
+              <span style={{ fontSize: 16, color: 'var(--ve-text-3, #9B8EC4)', alignSelf: 'flex-end', paddingBottom: 6 }}>kcal</span>
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
-              <MacroPill label="Protein" value={result.totalProtein} unit="g" color="#22C55E" />
-              <MacroPill label="Carbs" value={result.totalCarbs} unit="g" color="#F5C518" />
-              <MacroPill label="Fat" value={result.totalFat} unit="g" color="#F97316" />
+              <MacroPill label="Protein" value={result.totalProtein} unit="g" color="#7C3AED" />
+              <MacroPill label="Carbs" value={result.totalCarbs} unit="g" color="#8B5CF6" />
+              <MacroPill label="Fat" value={result.totalFat} unit="g" color="#EC4899" />
             </div>
           </div>
 
           {/* Per-item breakdown */}
           <div style={{ marginBottom: 14 }}>
-            <p style={{ fontSize: 12, fontWeight: 700, color: '#A0A0A0', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--ve-text-3, #9B8EC4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 10 }}>
               Items Identified ({result.foods.length})
             </p>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -441,8 +460,10 @@ export default function FoodScannerPage() {
                   <div
                     key={i}
                     style={{
-                      background: '#1A1A1A', border: '1px solid #2E2E2E',
+                      background: 'var(--ve-surface, #FFFFFF)',
+                      border: '1px solid var(--ve-border, #E8E0FA)',
                       borderRadius: 14, overflow: 'hidden',
+                      boxShadow: '0 1px 6px rgba(124,58,237,0.05)',
                     }}
                   >
                     <div
@@ -454,43 +475,44 @@ export default function FoodScannerPage() {
                     >
                       <div style={{
                         width: 36, height: 36, borderRadius: 10, flexShrink: 0,
-                        background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.15)',
+                        background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.15)',
                         display: 'flex', alignItems: 'center', justifyContent: 'center',
                         fontSize: 18,
                       }}>
                         🍽️
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{food.name}</p>
-                        <p style={{ fontSize: 11, color: '#A0A0A0' }}>{food.portion}</p>
+                        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text, #1A0A2E)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{food.name}</p>
+                        <p style={{ fontSize: 11, color: 'var(--ve-text-3, #9B8EC4)' }}>{food.portion}</p>
                       </div>
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <p style={{ fontSize: 15, fontWeight: 800, color: '#22C55E' }}>{food.calories}</p>
-                        <p style={{ fontSize: 10, color: '#A0A0A0' }}>kcal</p>
+                        <p style={{ fontSize: 15, fontWeight: 800, color: 'var(--ve-purple, #7C3AED)' }}>{food.calories}</p>
+                        <p style={{ fontSize: 10, color: 'var(--ve-text-3, #9B8EC4)' }}>kcal</p>
                       </div>
-                      {open ? <ChevronUp size={14} color="#606060" style={{ flexShrink: 0 }} /> : <ChevronDown size={14} color="#606060" style={{ flexShrink: 0 }} />}
+                      {open ? <ChevronUp size={14} color="var(--ve-text-3, #9B8EC4)" style={{ flexShrink: 0 }} /> : <ChevronDown size={14} color="var(--ve-text-3, #9B8EC4)" style={{ flexShrink: 0 }} />}
                     </div>
 
                     {open && (
-                      <div style={{ padding: '0 14px 14px', borderTop: '1px solid #2E2E2E' }}>
+                      <div style={{ padding: '0 14px 14px', borderTop: '1px solid var(--ve-border, #E8E0FA)' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 6, marginTop: 12, marginBottom: 12 }}>
                           {[
-                            { label: 'Protein', value: food.protein, color: '#22C55E' },
-                            { label: 'Carbs', value: food.carbs, color: '#F5C518' },
-                            { label: 'Fat', value: food.fat, color: '#F97316' },
+                            { label: 'Protein', value: food.protein, color: '#7C3AED' },
+                            { label: 'Carbs', value: food.carbs, color: '#8B5CF6' },
+                            { label: 'Fat', value: food.fat, color: '#EC4899' },
                           ].map(m => (
-                            <div key={m.label} style={{ background: '#242424', borderRadius: 8, padding: '8px 6px', textAlign: 'center' }}>
+                            <div key={m.label} style={{ background: 'var(--ve-surface-2, #F3F0FF)', borderRadius: 8, padding: '8px 6px', textAlign: 'center', border: '1px solid var(--ve-border, #E8E0FA)' }}>
                               <div style={{ fontSize: 14, fontWeight: 700, color: m.color }}>{m.value}g</div>
-                              <div style={{ fontSize: 9, color: '#A0A0A0' }}>{m.label}</div>
+                              <div style={{ fontSize: 9, color: 'var(--ve-text-3, #9B8EC4)' }}>{m.label}</div>
                             </div>
                           ))}
                         </div>
                         <button
                           onClick={() => handleAddSingle(food)}
                           style={{
-                            width: '100%', padding: '9px', background: 'rgba(34,197,94,0.1)',
-                            border: '1px solid rgba(34,197,94,0.25)', borderRadius: 10,
-                            color: '#22C55E', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                            width: '100%', padding: '9px',
+                            background: 'rgba(124,58,237,0.06)',
+                            border: '1px solid rgba(124,58,237,0.2)', borderRadius: 10,
+                            color: 'var(--ve-purple, #7C3AED)', fontSize: 12, fontWeight: 700, cursor: 'pointer',
                             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                           }}
                         >
@@ -507,23 +529,24 @@ export default function FoodScannerPage() {
           {/* Health notes */}
           {result.healthNotes && (
             <div style={{
-              background: '#1A1A1A', border: '1px solid #2E2E2E',
+              background: 'var(--ve-surface, #FFFFFF)',
+              border: '1px solid rgba(124,58,237,0.2)',
               borderRadius: 14, padding: '14px 16px', marginBottom: 16,
               display: 'flex', gap: 12, alignItems: 'flex-start',
             }}>
-              <CheckCircle size={16} color="#22C55E" style={{ flexShrink: 0, marginTop: 1 }} />
+              <CheckCircle size={16} color="#7C3AED" style={{ flexShrink: 0, marginTop: 1 }} />
               <div>
-                <p style={{ fontSize: 11, fontWeight: 700, color: '#22C55E', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 5 }}>
+                <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--ve-purple, #7C3AED)', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: 5 }}>
                   Nutritionist Notes
                 </p>
-                <p style={{ fontSize: 13, color: '#C0C0C0', lineHeight: 1.65 }}>{result.healthNotes}</p>
+                <p style={{ fontSize: 13, color: 'var(--ve-text-2, #5B4A8A)', lineHeight: 1.65 }}>{result.healthNotes}</p>
               </div>
             </div>
           )}
 
           {/* Add all to meal */}
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 16, padding: '14px 16px', marginBottom: 14 }}>
-            <p style={{ fontSize: 12, color: '#A0A0A0', marginBottom: 10 }}>Add entire meal to:</p>
+          <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 16, padding: '14px 16px', marginBottom: 14, boxShadow: '0 2px 10px rgba(124,58,237,0.06)' }}>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 10 }}>Add entire meal to:</p>
             <div style={{ display: 'flex', gap: 10 }}>
               <select
                 value={selectedMeal}
@@ -537,11 +560,13 @@ export default function FoodScannerPage() {
                 onClick={handleAddAll}
                 style={{
                   flexShrink: 0, padding: '0 22px', height: 44,
-                  background: added ? 'rgba(34,197,94,0.15)' : '#22C55E',
-                  border: added ? '1px solid rgba(34,197,94,0.4)' : 'none',
-                  borderRadius: 12, color: added ? '#22C55E' : '#000',
+                  background: added ? 'rgba(124,58,237,0.1)' : 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                  border: added ? '1px solid rgba(124,58,237,0.3)' : 'none',
+                  borderRadius: 12,
+                  color: added ? 'var(--ve-purple, #7C3AED)' : '#FFFFFF',
                   fontSize: 14, fontWeight: 700, cursor: 'pointer',
                   display: 'flex', alignItems: 'center', gap: 6,
+                  boxShadow: added ? 'none' : '0 4px 12px rgba(124,58,237,0.25)',
                 }}
               >
                 {added ? <><CheckCircle size={15} /> Added!</> : <><Plus size={15} /> Add All</>}
@@ -554,8 +579,8 @@ export default function FoodScannerPage() {
             onClick={reset}
             style={{
               width: '100%', padding: 13, background: 'transparent',
-              border: '1px solid #2E2E2E', borderRadius: 14,
-              color: '#A0A0A0', fontSize: 14, fontWeight: 600, cursor: 'pointer',
+              border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 14,
+              color: 'var(--ve-text-2, #5B4A8A)', fontSize: 14, fontWeight: 600, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
             }}
           >
@@ -567,10 +592,10 @@ export default function FoodScannerPage() {
       {/* Tips — only on idle */}
       {step === 'idle' && (
         <div style={{
-          background: 'rgba(34,197,94,0.04)', border: '1px solid rgba(34,197,94,0.12)',
+          background: 'rgba(124,58,237,0.04)', border: '1px solid rgba(124,58,237,0.12)',
           borderRadius: 14, padding: '14px 16px',
         }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: '#22C55E', marginBottom: 10 }}>Tips for accurate results</p>
+          <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--ve-purple, #7C3AED)', marginBottom: 10 }}>Tips for accurate results</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[
               'Photograph from directly above the plate for best view',
@@ -579,8 +604,8 @@ export default function FoodScannerPage() {
               'Works on any meal — Indian, Chinese, Western, snacks',
             ].map((tip, i) => (
               <div key={i} style={{ display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                <span style={{ color: '#22C55E', fontSize: 12, flexShrink: 0, marginTop: 1 }}>•</span>
-                <span style={{ fontSize: 12, color: '#A0A0A0', lineHeight: 1.5 }}>{tip}</span>
+                <span style={{ color: 'var(--ve-purple, #7C3AED)', fontSize: 12, flexShrink: 0, marginTop: 1 }}>•</span>
+                <span style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', lineHeight: 1.5 }}>{tip}</span>
               </div>
             ))}
           </div>

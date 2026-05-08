@@ -159,8 +159,8 @@ function NutritionPageInner() {
   if (!mounted) {
     return (
       <div style={{ padding: '24px 20px' }}>
-        <div style={{ height: 40, background: '#1A1A1A', borderRadius: 12, marginBottom: 16, width: '40%' }} />
-        <div style={{ height: 200, background: '#1A1A1A', borderRadius: 20, marginBottom: 16 }} />
+        <div style={{ height: 40, background: '#F3F0FF', borderRadius: 12, marginBottom: 16, width: '40%' }} />
+        <div style={{ height: 200, background: '#F3F0FF', borderRadius: 20, marginBottom: 16 }} />
       </div>
     );
   }
@@ -174,7 +174,7 @@ function NutritionPageInner() {
     Math.round(log.meals[meal].reduce((s, e) => s + e.calories * e.quantity, 0));
 
   const macroPie = [
-    { name: 'Protein', value: totals.protein * 4, fill: '#22C55E' },
+    { name: 'Protein', value: totals.protein * 4, fill: 'var(--ve-purple)' },
     { name: 'Carbs', value: totals.carbs * 4, fill: '#F5C518' },
     { name: 'Fats', value: totals.fats * 9, fill: '#F97316' },
   ];
@@ -223,14 +223,14 @@ function NutritionPageInner() {
 
   return (
     <div style={{ padding: '24px 20px', maxWidth: 900, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>Nutrition</h1>
-      <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 24 }}>Today&apos;s food diary</p>
+      <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ve-text)', marginBottom: 4 }}>Nutrition</h1>
+      <p style={{ fontSize: 14, color: 'var(--ve-text-3)', marginBottom: 24 }}>Today&apos;s food diary</p>
 
       {/* Calorie ring */}
       <div
         style={{
-          background: '#1A1A1A',
-          border: '1px solid #2E2E2E',
+          background: 'var(--ve-surface)',
+          border: '1px solid var(--ve-border)',
           borderRadius: 20,
           padding: '24px 20px',
           display: 'flex',
@@ -238,6 +238,7 @@ function NutritionPageInner() {
           alignItems: 'center',
           gap: 20,
           marginBottom: 20,
+          boxShadow: 'var(--ve-shadow-sm)',
         }}
         className="sm:flex-row"
       >
@@ -245,15 +246,15 @@ function NutritionPageInner() {
         <div style={{ flex: 1, width: '100%' }}>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
             {[
-              { label: 'Protein', value: totals.protein, unit: 'g', color: '#22C55E' },
+              { label: 'Protein', value: totals.protein, unit: 'g', color: 'var(--ve-purple)' },
               { label: 'Carbs', value: totals.carbs, unit: 'g', color: '#F5C518' },
               { label: 'Fats', value: totals.fats, unit: 'g', color: '#F97316' },
             ].map((m) => (
-              <div key={m.label} style={{ textAlign: 'center', background: '#242424', borderRadius: 12, padding: '12px 8px' }}>
+              <div key={m.label} style={{ textAlign: 'center', background: 'var(--ve-surface-2)', border: '1px solid var(--ve-border)', borderRadius: 12, padding: '12px 8px' }}>
                 <div style={{ fontSize: 20, fontWeight: 800, color: m.color }}>
-                  {m.value}<span style={{ fontSize: 12, fontWeight: 400, color: '#A0A0A0' }}>{m.unit}</span>
+                  {m.value}<span style={{ fontSize: 12, fontWeight: 400, color: 'var(--ve-text-3)' }}>{m.unit}</span>
                 </div>
-                <div style={{ fontSize: 11, color: '#A0A0A0', marginTop: 2 }}>{m.label}</div>
+                <div style={{ fontSize: 11, color: 'var(--ve-text-3)', marginTop: 2 }}>{m.label}</div>
               </div>
             ))}
           </div>
@@ -265,11 +266,12 @@ function NutritionPageInner() {
         <div
           key={meal}
           style={{
-            background: '#1A1A1A',
-            border: '1px solid #2E2E2E',
+            background: 'var(--ve-surface)',
+            border: '1px solid var(--ve-border)',
             borderRadius: 16,
             marginBottom: 10,
             overflow: 'hidden',
+            boxShadow: 'var(--ve-shadow-sm)',
           }}
         >
           <button
@@ -283,20 +285,20 @@ function NutritionPageInner() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              color: '#FFFFFF',
+              color: 'var(--ve-text)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
               <span style={{ fontSize: 15, fontWeight: 700 }}>{meal}</span>
-              <span style={{ fontSize: 12, color: '#A0A0A0' }}>{mealCalories(meal)} kcal</span>
+              <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{mealCalories(meal)} kcal</span>
             </div>
-            {expanded[meal] ? <ChevronUp size={16} color="#A0A0A0" /> : <ChevronDown size={16} color="#A0A0A0" />}
+            {expanded[meal] ? <ChevronUp size={16} color="var(--ve-text-3)" /> : <ChevronDown size={16} color="var(--ve-text-3)" />}
           </button>
 
           {expanded[meal] && (
             <div style={{ padding: '0 20px 16px' }}>
               {log.meals[meal].length === 0 && (
-                <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 12 }}>No items logged yet</p>
+                <p style={{ fontSize: 13, color: 'var(--ve-text-3)', marginBottom: 12 }}>No items logged yet</p>
               )}
               {log.meals[meal].map((entry) => (
                 <div
@@ -306,18 +308,18 @@ function NutritionPageInner() {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '10px 0',
-                    borderBottom: '1px solid #2E2E2E',
+                    borderBottom: '1px solid var(--ve-border)',
                   }}
                 >
                   <div>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF' }}>{entry.name}</div>
-                    <div style={{ fontSize: 11, color: '#A0A0A0' }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ve-text)' }}>{entry.name}</div>
+                    <div style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>
                       {entry.quantity > 1 ? `${entry.quantity} × ` : ''}{entry.unit} · {Math.round(entry.calories * entry.quantity)} kcal
                     </div>
                   </div>
                   <button
                     onClick={() => removeFoodEntry(meal, entry.id)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A0A0A0', padding: 4 }}
+                    style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ve-text-3)', padding: 4 }}
                   >
                     <X size={14} />
                   </button>
@@ -330,10 +332,10 @@ function NutritionPageInner() {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 6,
-                  background: 'rgba(34,197,94,0.1)',
-                  border: '1px dashed rgba(34,197,94,0.4)',
+                  background: 'rgba(124,58,237,0.06)',
+                  border: '1px dashed rgba(124,58,237,0.35)',
                   borderRadius: 10,
-                  color: '#22C55E',
+                  color: 'var(--ve-purple)',
                   fontSize: 13,
                   fontWeight: 600,
                   padding: '8px 14px',
@@ -350,27 +352,28 @@ function NutritionPageInner() {
       {/* Daily Summary */}
       <div
         style={{
-          background: '#1A1A1A',
-          border: '1px solid #2E2E2E',
+          background: 'var(--ve-surface)',
+          border: '1px solid var(--ve-border)',
           borderRadius: 20,
           padding: '20px',
           marginTop: 20,
           marginBottom: 20,
+          boxShadow: 'var(--ve-shadow-sm)',
         }}
       >
-        <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginBottom: 16 }}>Daily Summary</p>
+        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 16 }}>Daily Summary</p>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20 }}>
           {[
-            { label: 'Total Calories', value: `${totals.calories} kcal`, color: '#FFFFFF' },
-            { label: 'Calorie Goal', value: `${goal} kcal`, color: '#A0A0A0' },
+            { label: 'Total Calories', value: `${totals.calories} kcal`, color: 'var(--ve-text)' },
+            { label: 'Calorie Goal', value: `${goal} kcal`, color: 'var(--ve-text-2)' },
             {
               label: 'Net Calories',
               value: `${totals.calories - goal > 0 ? '+' : ''}${totals.calories - goal} kcal`,
-              color: totals.calories > goal ? '#EF4444' : '#22C55E',
+              color: totals.calories > goal ? 'var(--ve-danger)' : 'var(--ve-purple)',
             },
           ].map((row) => (
-            <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid #2E2E2E' }}>
-              <span style={{ fontSize: 13, color: '#A0A0A0' }}>{row.label}</span>
+            <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: '1px solid var(--ve-border)' }}>
+              <span style={{ fontSize: 13, color: 'var(--ve-text-3)' }}>{row.label}</span>
               <span style={{ fontSize: 14, fontWeight: 700, color: row.color }}>{row.value}</span>
             </div>
           ))}
@@ -388,14 +391,14 @@ function NutritionPageInner() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {[
-              { name: 'Protein', value: totals.protein, fill: '#22C55E' },
+              { name: 'Protein', value: totals.protein, fill: 'var(--ve-purple)' },
               { name: 'Carbs', value: totals.carbs, fill: '#F5C518' },
               { name: 'Fats', value: totals.fats, fill: '#F97316' },
             ].map((m) => (
               <div key={m.name} style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <div style={{ width: 10, height: 10, borderRadius: '50%', background: m.fill, flexShrink: 0 }} />
-                <span style={{ fontSize: 12, color: '#A0A0A0' }}>{m.name}</span>
-                <span style={{ fontSize: 12, color: '#FFFFFF', fontWeight: 600, marginLeft: 'auto' }}>{m.value}g</span>
+                <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{m.name}</span>
+                <span style={{ fontSize: 12, color: 'var(--ve-text)', fontWeight: 600, marginLeft: 'auto' }}>{m.value}g</span>
               </div>
             ))}
           </div>
@@ -403,20 +406,20 @@ function NutritionPageInner() {
       </div>
 
       {/* Weekly chart */}
-      <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 20, padding: '20px' }}>
-        <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginBottom: 16 }}>This Week</p>
+      <div style={{ background: 'var(--ve-surface)', border: '1px solid var(--ve-border)', borderRadius: 20, padding: '20px', boxShadow: 'var(--ve-shadow-sm)' }}>
+        <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 16 }}>This Week</p>
         <ResponsiveContainer width="100%" height={120}>
           <BarChart data={weeklyData} barSize={22}>
-            <XAxis dataKey="day" tick={{ fill: '#A0A0A0', fontSize: 11 }} axisLine={false} tickLine={false} />
+            <XAxis dataKey="day" tick={{ fill: 'var(--ve-text-3)', fontSize: 11 }} axisLine={false} tickLine={false} />
             <Tooltip
-              contentStyle={{ background: '#242424', border: '1px solid #2E2E2E', borderRadius: 10, color: '#FFFFFF' }}
-              cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+              contentStyle={{ background: '#FFFFFF', border: '1px solid var(--ve-border)', borderRadius: 10, color: 'var(--ve-text)' }}
+              cursor={{ fill: 'rgba(124,58,237,0.04)' }}
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               formatter={((v: any) => [`${v} kcal`, '']) as any}
             />
             <Bar dataKey="calories" radius={[6, 6, 0, 0]}>
               {weeklyData.map((entry, i) => (
-                <Cell key={i} fill={entry.calories >= entry.goal ? '#22C55E' : '#2E2E2E'} />
+                <Cell key={i} fill={entry.calories >= entry.goal ? 'var(--ve-purple)' : 'var(--ve-border)'} />
               ))}
             </Bar>
           </BarChart>
@@ -429,7 +432,7 @@ function NutritionPageInner() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(0,0,0,0.75)',
+            background: 'rgba(26,10,46,0.45)',
             zIndex: 100,
             display: 'flex',
             alignItems: 'flex-end',
@@ -439,29 +442,30 @@ function NutritionPageInner() {
         >
           <div
             style={{
-              background: '#1A1A1A',
+              background: '#FFFFFF',
               borderRadius: '24px 24px 0 0',
-              border: '1px solid #2E2E2E',
+              border: '1px solid var(--ve-border)',
               borderBottom: 'none',
               width: '100%',
               maxWidth: 600,
               padding: '28px 24px 32px',
               maxHeight: '85vh',
               overflowY: 'auto',
+              boxShadow: 'var(--ve-shadow-lg)',
             }}
           >
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-              <h3 style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF' }}>Add to {modalMeal}</h3>
-              <button onClick={closeModal} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A0A0A0' }}>
+              <h3 style={{ fontSize: 18, fontWeight: 800, color: 'var(--ve-text)' }}>Add to {modalMeal}</h3>
+              <button onClick={closeModal} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ve-text-3)' }}>
                 <X size={20} />
               </button>
             </div>
 
             {/* Search bar */}
             <div style={{ position: 'relative', marginBottom: 4 }}>
-              <Search size={16} color="#A0A0A0" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+              <Search size={16} color="var(--ve-text-3)" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
               {searching && (
-                <Loader2 size={16} color="#22C55E" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', animation: 'spin 1s linear infinite' }} />
+                <Loader2 size={16} color="var(--ve-purple)" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', animation: 'spin 1s linear infinite' }} />
               )}
               <input
                 className="input-field"
@@ -473,7 +477,7 @@ function NutritionPageInner() {
               />
             </div>
             {search.trim() && (
-              <p style={{ fontSize: 11, color: '#A0A0A0', marginBottom: 12 }}>
+              <p style={{ fontSize: 11, color: 'var(--ve-text-3)', marginBottom: 12 }}>
                 Searching local + Open Food Facts database
               </p>
             )}
@@ -484,7 +488,7 @@ function NutritionPageInner() {
             {/* Results */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 20, maxHeight: 280, overflowY: 'auto' }}>
               {searchResults.length === 0 && !searching && (
-                <p style={{ fontSize: 13, color: '#A0A0A0', textAlign: 'center', padding: '20px 0' }}>No foods found</p>
+                <p style={{ fontSize: 13, color: 'var(--ve-text-3)', textAlign: 'center', padding: '20px 0' }}>No foods found</p>
               )}
               {searchResults.map((food) => (
                 <div
@@ -496,24 +500,24 @@ function NutritionPageInner() {
                     justifyContent: 'space-between',
                     padding: '12px 14px',
                     borderRadius: 12,
-                    background: selectedFood?.id === food.id ? 'rgba(34,197,94,0.12)' : '#242424',
-                    border: `1px solid ${selectedFood?.id === food.id ? 'rgba(34,197,94,0.4)' : '#2E2E2E'}`,
+                    background: selectedFood?.id === food.id ? 'rgba(124,58,237,0.08)' : 'var(--ve-surface-2)',
+                    border: `1px solid ${selectedFood?.id === food.id ? 'rgba(124,58,237,0.40)' : 'var(--ve-border)'}`,
                     cursor: 'pointer',
                     transition: 'all 0.15s',
                   }}
                 >
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{food.name}</div>
-                    <div style={{ fontSize: 11, color: '#A0A0A0' }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ve-text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{food.name}</div>
+                    <div style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>
                       {food.per100g ? 'per 100g' : food.servingLabel}
                       {!food.id.startsWith('local-') && (
-                        <span style={{ marginLeft: 6, fontSize: 10, color: '#555', background: '#1A1A1A', borderRadius: 4, padding: '1px 5px' }}>OFF</span>
+                        <span style={{ marginLeft: 6, fontSize: 10, color: 'var(--ve-text-3)', background: 'var(--ve-surface-3)', borderRadius: 4, padding: '1px 5px' }}>OFF</span>
                       )}
                     </div>
                   </div>
                   <div style={{ textAlign: 'right', flexShrink: 0, marginLeft: 12 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#22C55E' }}>{food.calories}</div>
-                    <div style={{ fontSize: 10, color: '#A0A0A0' }}>kcal</div>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-purple)' }}>{food.calories}</div>
+                    <div style={{ fontSize: 10, color: 'var(--ve-text-3)' }}>kcal</div>
                   </div>
                 </div>
               ))}
@@ -521,8 +525,8 @@ function NutritionPageInner() {
 
             {/* Quantity selector */}
             {selectedFood && (
-              <div style={{ background: '#242424', borderRadius: 12, padding: '16px', marginBottom: 16 }}>
-                <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 10 }}>
+              <div style={{ background: 'var(--ve-surface-2)', border: '1px solid var(--ve-border)', borderRadius: 12, padding: '16px', marginBottom: 16 }}>
+                <p style={{ fontSize: 13, color: 'var(--ve-text-2)', marginBottom: 10 }}>
                   {selectedFood.per100g ? 'Amount (grams)' : 'Quantity'}
                 </p>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -535,10 +539,10 @@ function NutritionPageInner() {
                       style={{
                         width: 80,
                         padding: '6px 10px',
-                        background: '#1A1A1A',
-                        border: '1px solid #2E2E2E',
+                        background: '#FFFFFF',
+                        border: '1px solid var(--ve-border)',
                         borderRadius: 8,
-                        color: '#FFFFFF',
+                        color: 'var(--ve-text)',
                         fontSize: 16,
                         fontWeight: 700,
                         textAlign: 'center',
@@ -548,19 +552,19 @@ function NutritionPageInner() {
                     <>
                       <button
                         onClick={() => setQty(Math.max(0.5, qty - 0.5))}
-                        style={{ width: 32, height: 32, borderRadius: '50%', background: '#2E2E2E', border: 'none', cursor: 'pointer', color: '#FFFFFF', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--ve-border)', border: 'none', cursor: 'pointer', color: 'var(--ve-text)', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >−</button>
-                      <span style={{ fontSize: 18, fontWeight: 700, color: '#FFFFFF', minWidth: 30, textAlign: 'center' }}>{qty}</span>
+                      <span style={{ fontSize: 18, fontWeight: 700, color: 'var(--ve-text)', minWidth: 30, textAlign: 'center' }}>{qty}</span>
                       <button
                         onClick={() => setQty(qty + 0.5)}
-                        style={{ width: 32, height: 32, borderRadius: '50%', background: '#2E2E2E', border: 'none', cursor: 'pointer', color: '#FFFFFF', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                        style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--ve-border)', border: 'none', cursor: 'pointer', color: 'var(--ve-text)', fontSize: 18, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                       >+</button>
                     </>
                   )}
-                  <span style={{ fontSize: 12, color: '#A0A0A0' }}>
+                  <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>
                     {selectedFood.per100g ? 'g' : selectedFood.servingLabel}
                   </span>
-                  <span style={{ marginLeft: 'auto', fontSize: 14, fontWeight: 700, color: '#22C55E' }}>
+                  <span style={{ marginLeft: 'auto', fontSize: 14, fontWeight: 700, color: 'var(--ve-purple)' }}>
                     {computedQtyCalories} kcal
                   </span>
                 </div>
@@ -588,7 +592,7 @@ function NutritionPageInner() {
 
 export default function NutritionPage() {
   return (
-    <Suspense fallback={<div style={{ padding: 24, color: '#A0A0A0' }}>Loading...</div>}>
+    <Suspense fallback={<div style={{ padding: 24, color: 'var(--ve-text-3)' }}>Loading...</div>}>
       <NutritionPageInner />
     </Suspense>
   );

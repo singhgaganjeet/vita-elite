@@ -284,21 +284,22 @@ function analyzeSearchProduct(product: Record<string, unknown>, userGoals: strin
 // ─── Sub-components ───────────────────────────────────────────────────────────
 
 function ScoreGauge({ score }: { score: number }) {
-  const color = score >= 7 ? '#22C55E' : score >= 4 ? '#F5C518' : '#EF4444';
+  const color = score >= 7 ? '#7C3AED' : score >= 4 ? '#8B5CF6' : '#EC4899';
   const label = score >= 7 ? 'Healthy' : score >= 4 ? 'Moderate' : 'Unhealthy';
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
       <div style={{
         width: 72, height: 72, borderRadius: '50%',
-        background: `conic-gradient(${color} ${score * 36}deg, #2E2E2E ${score * 36}deg)`,
+        background: `conic-gradient(${color} ${score * 36}deg, var(--ve-border, #E8E0FA) ${score * 36}deg)`,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}>
         <div style={{
-          width: 54, height: 54, borderRadius: '50%', background: '#1A1A1A',
+          width: 54, height: 54, borderRadius: '50%', background: 'var(--ve-surface, #FFFFFF)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column',
+          boxShadow: '0 0 0 1px var(--ve-border, #E8E0FA)',
         }}>
           <span style={{ fontSize: 20, fontWeight: 900, color, lineHeight: 1 }}>{score}</span>
-          <span style={{ fontSize: 8, color: '#A0A0A0' }}>/10</span>
+          <span style={{ fontSize: 8, color: 'var(--ve-text-3, #9B8EC4)' }}>/10</span>
         </div>
       </div>
       <span style={{ fontSize: 11, fontWeight: 600, color }}>{label}</span>
@@ -327,31 +328,31 @@ function ReportCard({ report, onReset, profile, savedProducts, saveProduct }: {
 
   return (
     <div className="animate-fade-in-up">
-      <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 20, padding: 20, marginBottom: 14 }}>
+      <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 20, padding: 20, marginBottom: 14, boxShadow: '0 4px 24px rgba(124,58,237,0.08)' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16, marginBottom: 16 }}>
           <ScoreGauge score={report.healthScore} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <p style={{ fontSize: 11, color: '#A0A0A0', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 4 }}>Health Analysis</p>
-            <h3 style={{ fontSize: 17, fontWeight: 800, color: '#FFFFFF', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{report.productName}</h3>
-            <p style={{ fontSize: 12, color: '#A0A0A0' }}>Per {report.servingSize}</p>
+            <p style={{ fontSize: 11, color: 'var(--ve-text-3, #9B8EC4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 4 }}>Health Analysis</p>
+            <h3 style={{ fontSize: 17, fontWeight: 800, color: 'var(--ve-text, #1A0A2E)', marginBottom: 4, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{report.productName}</h3>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)' }}>Per {report.servingSize}</p>
           </div>
         </div>
-        <div style={{ background: '#242424', borderRadius: 12, overflow: 'hidden' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', padding: '8px 14px', borderBottom: '1px solid #2E2E2E' }}>
-            <span style={{ fontSize: 10, color: '#A0A0A0', fontWeight: 700, textTransform: 'uppercase' }}>Nutrient</span>
-            <span style={{ fontSize: 10, color: '#A0A0A0', fontWeight: 700, textTransform: 'uppercase', textAlign: 'right' }}>Amount</span>
+        <div style={{ background: 'var(--ve-surface-2, #F3F0FF)', borderRadius: 12, overflow: 'hidden', border: '1px solid var(--ve-border, #E8E0FA)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', padding: '8px 14px', borderBottom: '1px solid var(--ve-border, #E8E0FA)' }}>
+            <span style={{ fontSize: 10, color: 'var(--ve-text-3, #9B8EC4)', fontWeight: 700, textTransform: 'uppercase' }}>Nutrient</span>
+            <span style={{ fontSize: 10, color: 'var(--ve-text-3, #9B8EC4)', fontWeight: 700, textTransform: 'uppercase', textAlign: 'right' }}>Amount</span>
           </div>
           {rows.map((row, i) => (
-            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr auto', padding: '9px 14px', borderBottom: i < rows.length - 1 ? '1px solid #2E2E2E' : 'none' }}>
-              <span style={{ fontSize: 12, color: row.name.startsWith('of') ? '#888' : '#E0E0E0', paddingLeft: row.name.startsWith('of') ? 12 : 0 }}>{row.name}</span>
-              <span style={{ fontSize: 12, color: '#FFFFFF', fontWeight: 600, textAlign: 'right' }}>{row.value}</span>
+            <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr auto', padding: '9px 14px', borderBottom: i < rows.length - 1 ? '1px solid var(--ve-border, #E8E0FA)' : 'none', background: i % 2 === 0 ? 'transparent' : 'rgba(124,58,237,0.02)' }}>
+              <span style={{ fontSize: 12, color: row.name.startsWith('of') ? 'var(--ve-text-3, #9B8EC4)' : 'var(--ve-text-2, #5B4A8A)', paddingLeft: row.name.startsWith('of') ? 12 : 0 }}>{row.name}</span>
+              <span style={{ fontSize: 12, color: 'var(--ve-text, #1A0A2E)', fontWeight: 600, textAlign: 'right' }}>{row.value}</span>
             </div>
           ))}
         </div>
       </div>
 
       {report.redFlags.length > 0 && (
-        <div style={{ background: '#1A1A1A', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
+        <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <AlertTriangle size={15} color="#EF4444" />
             <span style={{ fontSize: 13, fontWeight: 700, color: '#EF4444' }}>Red Flags</span>
@@ -359,39 +360,39 @@ function ReportCard({ report, onReset, profile, savedProducts, saveProduct }: {
           {report.redFlags.map((f, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 6 }}>
               <XCircle size={13} color="#EF4444" style={{ flexShrink: 0, marginTop: 1 }} />
-              <span style={{ fontSize: 12, color: '#E0E0E0', lineHeight: 1.5 }}>{f}</span>
+              <span style={{ fontSize: 12, color: 'var(--ve-text-2, #5B4A8A)', lineHeight: 1.5 }}>{f}</span>
             </div>
           ))}
         </div>
       )}
 
-      <div style={{ background: '#1A1A1A', border: '1px solid rgba(34,197,94,0.3)', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
+      <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid rgba(124,58,237,0.2)', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
-          <CheckCircle size={15} color="#22C55E" />
-          <span style={{ fontSize: 13, fontWeight: 700, color: '#22C55E' }}>Positives</span>
+          <CheckCircle size={15} color="#7C3AED" />
+          <span style={{ fontSize: 13, fontWeight: 700, color: 'var(--ve-purple, #7C3AED)' }}>Positives</span>
         </div>
         {report.positives.map((p, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 6 }}>
-            <CheckCircle size={13} color="#22C55E" style={{ flexShrink: 0, marginTop: 1 }} />
-            <span style={{ fontSize: 12, color: '#E0E0E0', lineHeight: 1.5 }}>{p}</span>
+            <CheckCircle size={13} color="#7C3AED" style={{ flexShrink: 0, marginTop: 1 }} />
+            <span style={{ fontSize: 12, color: 'var(--ve-text-2, #5B4A8A)', lineHeight: 1.5 }}>{p}</span>
           </div>
         ))}
       </div>
 
       {report.ingredients && (
-        <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
-          <p style={{ fontSize: 12, fontWeight: 700, color: '#A0A0A0', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8 }}>Ingredients</p>
-          <p style={{ fontSize: 12, color: '#A0A0A0', lineHeight: 1.6 }}>{report.ingredients}{report.ingredients.length >= 200 ? '...' : ''}</p>
+        <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
+          <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--ve-text-3, #9B8EC4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8 }}>Ingredients</p>
+          <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', lineHeight: 1.6 }}>{report.ingredients}{report.ingredients.length >= 200 ? '...' : ''}</p>
         </div>
       )}
 
-      <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
-        <p style={{ fontSize: 12, fontWeight: 700, color: '#A0A0A0', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8 }}>Verdict</p>
-        <p style={{ fontSize: 13, color: '#E0E0E0', lineHeight: 1.7, marginBottom: 12 }}>{report.verdict}</p>
+      <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 16, padding: '16px 18px', marginBottom: 14 }}>
+        <p style={{ fontSize: 12, fontWeight: 700, color: 'var(--ve-text-3, #9B8EC4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 8 }}>Verdict</p>
+        <p style={{ fontSize: 13, color: 'var(--ve-text-2, #5B4A8A)', lineHeight: 1.7, marginBottom: 12 }}>{report.verdict}</p>
         {profile.goals.length > 0 && (
-          <div style={{ background: 'rgba(34,197,94,0.08)', borderRadius: 10, padding: '10px 12px', borderLeft: '3px solid #22C55E' }}>
-            <p style={{ fontSize: 12, color: '#A0A0A0', fontWeight: 600, marginBottom: 4 }}>For your goals ({profile.goals.join(', ')})</p>
-            <p style={{ fontSize: 12, color: '#E0E0E0', lineHeight: 1.5 }}>{report.goalVerdict}</p>
+          <div style={{ background: 'rgba(124,58,237,0.06)', borderRadius: 10, padding: '10px 12px', borderLeft: '3px solid #7C3AED' }}>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', fontWeight: 600, marginBottom: 4 }}>For your goals ({profile.goals.join(', ')})</p>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-2, #5B4A8A)', lineHeight: 1.5 }}>{report.goalVerdict}</p>
           </div>
         )}
       </div>
@@ -401,9 +402,10 @@ function ReportCard({ report, onReset, profile, savedProducts, saveProduct }: {
           onClick={() => saveProduct(report.productName)}
           style={{
             flex: 1, padding: 12,
-            background: isSaved ? 'rgba(34,197,94,0.15)' : '#242424',
-            border: `1px solid ${isSaved ? 'rgba(34,197,94,0.4)' : '#2E2E2E'}`,
-            borderRadius: 12, color: isSaved ? '#22C55E' : '#A0A0A0',
+            background: isSaved ? 'rgba(124,58,237,0.08)' : 'var(--ve-surface-2, #F3F0FF)',
+            border: `1px solid ${isSaved ? 'rgba(124,58,237,0.3)' : 'var(--ve-border, #E8E0FA)'}`,
+            borderRadius: 12,
+            color: isSaved ? 'var(--ve-purple, #7C3AED)' : 'var(--ve-text-3, #9B8EC4)',
             fontSize: 13, fontWeight: 600, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
           }}
@@ -413,9 +415,12 @@ function ReportCard({ report, onReset, profile, savedProducts, saveProduct }: {
         <button
           onClick={onReset}
           style={{
-            flex: 1, padding: 12, background: '#3B82F6', border: 'none', borderRadius: 12,
+            flex: 1, padding: 12,
+            background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+            border: 'none', borderRadius: 12,
             color: '#FFFFFF', fontSize: 13, fontWeight: 700, cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+            boxShadow: '0 4px 12px rgba(124,58,237,0.25)',
           }}
         >
           <RefreshCw size={16} /> Scan Another
@@ -580,19 +585,23 @@ export default function LabelScannerPage() {
     return () => clearTimeout(t);
   }, [searchQuery, doSearch]);
 
-  if (!mounted) return <div style={{ padding: '24px 20px' }}><div style={{ height: 40, background: '#1A1A1A', borderRadius: 12, width: '50%' }} /></div>;
+  if (!mounted) return (
+    <div style={{ padding: '24px 20px', background: 'var(--ve-bg, #F8F5FF)', minHeight: '100vh' }}>
+      <div style={{ height: 40, background: 'var(--ve-surface-2, #F3F0FF)', borderRadius: 12, width: '50%' }} />
+    </div>
+  );
 
   const showReport = report && (step === 'done' || mode === 'search');
 
   return (
-    <div style={{ padding: '24px 20px', maxWidth: 620, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>Label Scanner</h1>
-      <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 24 }}>
+    <div style={{ padding: '24px 20px', maxWidth: 620, margin: '0 auto', background: 'var(--ve-bg, #F8F5FF)', minHeight: '100vh' }}>
+      <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ve-text, #1A0A2E)', marginBottom: 4 }}>Label Scanner</h1>
+      <p style={{ fontSize: 14, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 24 }}>
         Photograph a nutrition facts label — we&apos;ll analyse it for you
       </p>
 
       {/* Mode Tabs */}
-      <div style={{ display: 'flex', background: '#1A1A1A', borderRadius: 12, padding: 4, marginBottom: 24, border: '1px solid #2E2E2E' }}>
+      <div style={{ display: 'flex', background: 'var(--ve-surface, #FFFFFF)', borderRadius: 12, padding: 4, marginBottom: 24, border: '1px solid var(--ve-border, #E8E0FA)', boxShadow: '0 2px 10px rgba(124,58,237,0.06)' }}>
         {(['scan', 'search'] as Mode[]).map((m) => (
           <button
             key={m}
@@ -603,10 +612,11 @@ export default function LabelScannerPage() {
             }}
             style={{
               flex: 1, padding: '8px 12px', borderRadius: 9, border: 'none',
-              background: mode === m ? '#3B82F6' : 'transparent',
-              color: mode === m ? '#FFFFFF' : '#A0A0A0',
+              background: mode === m ? 'linear-gradient(135deg, #7C3AED, #EC4899)' : 'transparent',
+              color: mode === m ? '#FFFFFF' : 'var(--ve-text-3, #9B8EC4)',
               fontSize: 13, fontWeight: mode === m ? 700 : 400, cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+              boxShadow: mode === m ? '0 2px 10px rgba(124,58,237,0.2)' : 'none',
             }}
           >
             {m === 'scan' ? <><Camera size={14} /> Scan Label</> : <><Search size={14} /> Search by Name</>}
@@ -619,9 +629,12 @@ export default function LabelScannerPage() {
         <div>
           {/* Camera / Preview area */}
           <div style={{
-            background: '#111', border: '1px solid #2E2E2E', borderRadius: 24,
+            background: 'var(--ve-surface, #FFFFFF)',
+            border: '1px solid var(--ve-border, #E8E0FA)',
+            borderRadius: 24,
             overflow: 'hidden', marginBottom: 20, minHeight: 280,
             position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            boxShadow: '0 4px 24px rgba(124,58,237,0.08)',
           }}>
             {/* Live video feed */}
             <video
@@ -645,13 +658,13 @@ export default function LabelScannerPage() {
 
             {/* OCR Processing overlay */}
             {step === 'processing' && (
-              <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.85)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
-                <Loader2 size={36} color="#3B82F6" style={{ animation: 'spin 1s linear infinite' }} />
-                <p style={{ color: '#FFFFFF', fontSize: 15, fontWeight: 600 }}>Reading nutrition label…</p>
-                <div style={{ width: '100%', background: '#2E2E2E', borderRadius: 99, height: 6 }}>
-                  <div style={{ height: 6, borderRadius: 99, background: '#3B82F6', width: `${ocrProgress}%`, transition: 'width 0.3s' }} />
+              <div style={{ position: 'absolute', inset: 0, background: 'rgba(248,245,255,0.92)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 16, padding: 24 }}>
+                <Loader2 size={36} color="#7C3AED" style={{ animation: 'spin 1s linear infinite' }} />
+                <p style={{ color: 'var(--ve-text, #1A0A2E)', fontSize: 15, fontWeight: 600 }}>Reading nutrition label…</p>
+                <div style={{ width: '100%', background: 'var(--ve-border, #E8E0FA)', borderRadius: 99, height: 6 }}>
+                  <div style={{ height: 6, borderRadius: 99, background: 'linear-gradient(90deg, #7C3AED, #EC4899)', width: `${ocrProgress}%`, transition: 'width 0.3s' }} />
                 </div>
-                <p style={{ color: '#A0A0A0', fontSize: 12 }}>{ocrProgress}% — analysing text</p>
+                <p style={{ color: 'var(--ve-text-3, #9B8EC4)', fontSize: 12 }}>{ocrProgress}% — analysing text</p>
               </div>
             )}
 
@@ -660,21 +673,23 @@ export default function LabelScannerPage() {
               <div style={{ textAlign: 'center', padding: '40px 20px' }}>
                 <div style={{
                   width: 72, height: 72, borderRadius: '50%',
-                  background: 'rgba(59,130,246,0.1)', border: '1px solid rgba(59,130,246,0.2)',
+                  background: 'rgba(124,58,237,0.08)', border: '1px solid rgba(124,58,237,0.2)',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px',
                 }}>
-                  <ImageIcon size={30} color="#3B82F6" />
+                  <ImageIcon size={30} color="#7C3AED" />
                 </div>
-                <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 8 }}>
-                  Point your camera at the <strong style={{ color: '#FFFFFF' }}>Nutrition Facts</strong> label
+                <p style={{ fontSize: 14, color: 'var(--ve-text-2, #5B4A8A)', marginBottom: 8 }}>
+                  Point your camera at the <strong style={{ color: 'var(--ve-text, #1A0A2E)' }}>Nutrition Facts</strong> label
                 </p>
-                <p style={{ fontSize: 12, color: '#606060', marginBottom: 24 }}>Ensure good lighting and hold the phone steady</p>
+                <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 24 }}>Ensure good lighting and hold the phone steady</p>
                 <button
                   onClick={startCamera}
                   style={{
-                    background: '#3B82F6', border: 'none', borderRadius: 24,
+                    background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                    border: 'none', borderRadius: 24,
                     padding: '12px 32px', color: '#FFFFFF', fontSize: 14, fontWeight: 700,
                     cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 8,
+                    boxShadow: '0 4px 14px rgba(124,58,237,0.25)',
                   }}
                 >
                   <Camera size={16} /> Open Camera
@@ -689,8 +704,8 @@ export default function LabelScannerPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}>
                 <div style={{
-                  width: '85%', height: 200, border: '2px solid rgba(59,130,246,0.7)',
-                  borderRadius: 12, boxShadow: '0 0 0 9999px rgba(0,0,0,0.35)',
+                  width: '85%', height: 200, border: '2px solid rgba(124,58,237,0.7)',
+                  borderRadius: 12, boxShadow: '0 0 0 9999px rgba(248,245,255,0.3)',
                 }} />
               </div>
             )}
@@ -699,24 +714,26 @@ export default function LabelScannerPage() {
             {step === 'camera' && (
               <div style={{
                 position: 'absolute', bottom: 0, left: 0, right: 0,
-                background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
+                background: 'linear-gradient(to top, rgba(248,245,255,0.85), transparent)',
                 padding: '24px 16px 18px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
               }}>
                 <button
                   onClick={reset}
-                  style={{ background: 'rgba(255,255,255,0.1)', border: '1px solid rgba(255,255,255,0.2)', borderRadius: 20, padding: '8px 20px', color: '#FFFFFF', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
+                  style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)', borderRadius: 20, padding: '8px 20px', color: '#7C3AED', fontSize: 13, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6 }}
                 >
                   <X size={14} /> Cancel
                 </button>
                 <button
                   onClick={capturePhoto}
                   style={{
-                    width: 64, height: 64, borderRadius: '50%', border: '4px solid #FFFFFF',
-                    background: '#FFFFFF', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    boxShadow: '0 0 0 4px rgba(255,255,255,0.25)',
+                    width: 64, height: 64, borderRadius: '50%',
+                    border: '4px solid rgba(124,58,237,0.3)',
+                    background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+                    cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    boxShadow: '0 0 0 4px rgba(124,58,237,0.15)',
                   }}
                 >
-                  <Camera size={22} color="#111" />
+                  <Camera size={22} color="#FFFFFF" />
                 </button>
                 <div style={{ width: 80 }} />
               </div>
@@ -729,8 +746,10 @@ export default function LabelScannerPage() {
               <button
                 onClick={startCamera}
                 style={{
-                  flex: 1, padding: '12px', background: '#242424',
-                  border: '1px solid #2E2E2E', borderRadius: 12, color: '#A0A0A0',
+                  flex: 1, padding: '12px',
+                  background: 'var(--ve-surface, #FFFFFF)',
+                  border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 12,
+                  color: 'var(--ve-text-2, #5B4A8A)',
                   fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
                 }}
@@ -740,10 +759,12 @@ export default function LabelScannerPage() {
               <button
                 onClick={runOCR}
                 style={{
-                  flex: 2, padding: '12px', background: '#3B82F6',
+                  flex: 2, padding: '12px',
+                  background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
                   border: 'none', borderRadius: 12, color: '#FFFFFF',
                   fontSize: 13, fontWeight: 700, cursor: 'pointer',
                   display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6,
+                  boxShadow: '0 4px 12px rgba(124,58,237,0.25)',
                 }}
               >
                 <ScanLine size={15} /> Analyse Label
@@ -753,12 +774,12 @@ export default function LabelScannerPage() {
 
           {/* Error */}
           {(step === 'error' || ocrError) && (
-            <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: 12, padding: '12px 16px', marginBottom: 16, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+            <div style={{ background: 'rgba(239,68,68,0.06)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 12, padding: '12px 16px', marginBottom: 16, display: 'flex', gap: 10, alignItems: 'flex-start' }}>
               <AlertCircle size={16} color="#EF4444" style={{ flexShrink: 0, marginTop: 1 }} />
               <div>
                 <p style={{ fontSize: 13, color: '#EF4444', lineHeight: 1.5 }}>{ocrError}</p>
                 {step === 'error' && (
-                  <button onClick={reset} style={{ marginTop: 8, fontSize: 12, color: '#3B82F6', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Try again →</button>
+                  <button onClick={reset} style={{ marginTop: 8, fontSize: 12, color: 'var(--ve-purple, #7C3AED)', background: 'none', border: 'none', cursor: 'pointer', padding: 0 }}>Try again →</button>
                 )}
               </div>
             </div>
@@ -766,12 +787,12 @@ export default function LabelScannerPage() {
 
           {/* Tips */}
           {step === 'idle' && (
-            <div style={{ background: 'rgba(59,130,246,0.06)', border: '1px solid rgba(59,130,246,0.15)', borderRadius: 14, padding: '14px 16px' }}>
-              <p style={{ fontSize: 12, color: '#60A5FA', fontWeight: 700, marginBottom: 8 }}>Tips for best results</p>
+            <div style={{ background: 'rgba(124,58,237,0.04)', border: '1px solid rgba(124,58,237,0.12)', borderRadius: 14, padding: '14px 16px' }}>
+              <p style={{ fontSize: 12, color: 'var(--ve-purple, #7C3AED)', fontWeight: 700, marginBottom: 8 }}>Tips for best results</p>
               <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 5 }}>
-                {['Ensure bright, even lighting — avoid shadows', 'Hold the phone parallel to the label', 'Fill the blue guide box with the Nutrition Facts table', 'Use Search tab if OCR struggles with your label'].map((tip, i) => (
-                  <li key={i} style={{ fontSize: 12, color: '#A0A0A0', display: 'flex', gap: 8 }}>
-                    <span style={{ color: '#3B82F6', flexShrink: 0 }}>•</span>{tip}
+                {['Ensure bright, even lighting — avoid shadows', 'Hold the phone parallel to the label', 'Fill the guide box with the Nutrition Facts table', 'Use Search tab if OCR struggles with your label'].map((tip, i) => (
+                  <li key={i} style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', display: 'flex', gap: 8 }}>
+                    <span style={{ color: 'var(--ve-purple, #7C3AED)', flexShrink: 0 }}>•</span>{tip}
                   </li>
                 ))}
               </ul>
@@ -784,8 +805,8 @@ export default function LabelScannerPage() {
       {mode === 'search' && !showReport && (
         <div style={{ marginBottom: 20 }}>
           <div style={{ position: 'relative', marginBottom: 12 }}>
-            <Search size={16} color="#A0A0A0" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
-            {(searching || searchLoading) && <Loader2 size={16} color="#3B82F6" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', animation: 'spin 1s linear infinite' }} />}
+            <Search size={16} color="var(--ve-text-3, #9B8EC4)" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+            {(searching || searchLoading) && <Loader2 size={16} color="#7C3AED" style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', animation: 'spin 1s linear infinite' }} />}
             <input
               className="input-field"
               placeholder="Search packaged foods by name..."
@@ -795,13 +816,13 @@ export default function LabelScannerPage() {
               autoFocus
             />
           </div>
-          {searchError && <p style={{ fontSize: 12, color: '#F97316', marginBottom: 8 }}>{searchError}</p>}
+          {searchError && <p style={{ fontSize: 12, color: '#EF4444', marginBottom: 8 }}>{searchError}</p>}
           {searchResults.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
               {searchResults.map((item, i) => (
-                <div key={i} onClick={() => fetchAndAnalyze(item.code)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 12, background: '#1A1A1A', border: '1px solid #2E2E2E', cursor: 'pointer' }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
-                  <ScanLine size={14} color="#3B82F6" style={{ flexShrink: 0, marginLeft: 8 }} />
+                <div key={i} onClick={() => fetchAndAnalyze(item.code)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 14px', borderRadius: 12, background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', cursor: 'pointer', boxShadow: '0 1px 4px rgba(124,58,237,0.05)' }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: 'var(--ve-text, #1A0A2E)', flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</div>
+                  <ScanLine size={14} color="#7C3AED" style={{ flexShrink: 0, marginLeft: 8 }} />
                 </div>
               ))}
             </div>

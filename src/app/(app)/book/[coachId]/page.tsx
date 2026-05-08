@@ -58,9 +58,9 @@ export default function BookingPage({ params }: PageProps) {
 
   if (!coach) {
     return (
-      <div style={{ padding: '60px 20px', textAlign: 'center' }}>
-        <p style={{ color: '#A0A0A0' }}>Coach not found</p>
-        <Link href="/coaches" style={{ color: '#22C55E', textDecoration: 'none' }}>Back to Coaches</Link>
+      <div style={{ padding: '60px 20px', textAlign: 'center', background: 'var(--ve-bg, #F8F5FF)', minHeight: '100vh' }}>
+        <p style={{ color: 'var(--ve-text-3, #9B8EC4)' }}>Coach not found</p>
+        <Link href="/coaches" style={{ color: 'var(--ve-purple, #7C3AED)', textDecoration: 'none' }}>Back to Coaches</Link>
       </div>
     );
   }
@@ -81,7 +81,7 @@ export default function BookingPage({ params }: PageProps) {
   const stepCount = 6;
 
   return (
-    <div style={{ maxWidth: 620, margin: '0 auto', padding: '24px 20px 40px' }}>
+    <div style={{ maxWidth: 620, margin: '0 auto', padding: '24px 20px 40px', background: 'var(--ve-bg, #F8F5FF)', minHeight: '100vh' }}>
       {/* Header */}
       {step < 7 && (
         <>
@@ -89,37 +89,37 @@ export default function BookingPage({ params }: PageProps) {
             {step > 1 ? (
               <button
                 onClick={() => setStep((s) => (s - 1) as BookingStep)}
-                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#A0A0A0', padding: 0 }}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--ve-text-3, #9B8EC4)', padding: 0 }}
               >
                 <ChevronLeft size={20} />
               </button>
             ) : (
-              <Link href={`/coaches/${coach.id}`} style={{ color: '#A0A0A0' }}>
+              <Link href={`/coaches/${coach.id}`} style={{ color: 'var(--ve-text-3, #9B8EC4)' }}>
                 <ChevronLeft size={20} />
               </Link>
             )}
             <div style={{ flex: 1 }}>
-              <h1 style={{ fontSize: 18, fontWeight: 800, color: '#FFFFFF', marginBottom: 2 }}>{stepTitles[step]}</h1>
-              <p style={{ fontSize: 12, color: '#A0A0A0' }}>Step {step} of {stepCount}</p>
+              <h1 style={{ fontSize: 18, fontWeight: 800, color: 'var(--ve-text, #1A0A2E)', marginBottom: 2 }}>{stepTitles[step]}</h1>
+              <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)' }}>Step {step} of {stepCount}</p>
             </div>
           </div>
-          <div style={{ height: 4, background: '#2E2E2E', borderRadius: 2, marginBottom: 28, overflow: 'hidden' }}>
-            <div style={{ height: '100%', width: `${(step / stepCount) * 100}%`, background: '#22C55E', borderRadius: 2, transition: 'width 0.3s ease' }} />
+          <div style={{ height: 4, background: 'var(--ve-border, #E8E0FA)', borderRadius: 2, marginBottom: 28, overflow: 'hidden' }}>
+            <div style={{ height: '100%', width: `${(step / stepCount) * 100}%`, background: 'linear-gradient(135deg, #7C3AED, #EC4899)', borderRadius: 2, transition: 'width 0.3s ease' }} />
           </div>
         </>
       )}
 
       {/* Coach summary strip */}
       {step < 7 && (
-        <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 14, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 14, padding: '12px 16px', marginBottom: 20, display: 'flex', alignItems: 'center', gap: 12, boxShadow: '0 2px 12px rgba(124,58,237,0.07)' }}>
           <CoachAvatar name={coach.name} category={coach.category} size={40} />
           <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 13, fontWeight: 700, color: '#FFFFFF' }}>{coach.name}</p>
-            <p style={{ fontSize: 11, color: '#A0A0A0' }}>{coach.city}</p>
+            <p style={{ fontSize: 13, fontWeight: 700, color: 'var(--ve-text, #1A0A2E)' }}>{coach.name}</p>
+            <p style={{ fontSize: 11, color: 'var(--ve-text-3, #9B8EC4)' }}>{coach.city}</p>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <p style={{ fontSize: 14, fontWeight: 800, color: '#22C55E' }}>₹{finalPrice.toLocaleString('en-IN')}</p>
-            <p style={{ fontSize: 10, color: '#A0A0A0' }}>{selectedService.key === 'trial' ? 'one-time' : '/month'}</p>
+            <p style={{ fontSize: 14, fontWeight: 800, color: 'var(--ve-purple, #7C3AED)' }}>₹{finalPrice.toLocaleString('en-IN')}</p>
+            <p style={{ fontSize: 10, color: 'var(--ve-text-3, #9B8EC4)' }}>{selectedService.key === 'trial' ? 'one-time' : '/month'}</p>
           </div>
         </div>
       )}
@@ -127,7 +127,7 @@ export default function BookingPage({ params }: PageProps) {
       {/* Step 1: Service selection */}
       {step === 1 && (
         <div className="animate-fade-in-up">
-          <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 16 }}>What type of session are you looking for?</p>
+          <p style={{ fontSize: 13, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 16 }}>What type of session are you looking for?</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
             {(['trial', 'monthly'] as ServiceType[]).map((key) => {
               const s = serviceOptions.find((o) => o.key === key)!;
@@ -140,21 +140,22 @@ export default function BookingPage({ params }: PageProps) {
                   style={{
                     padding: '16px 18px',
                     borderRadius: 14,
-                    border: `2px solid ${active ? '#22C55E' : '#2E2E2E'}`,
-                    background: active ? 'rgba(34,197,94,0.1)' : '#1A1A1A',
+                    border: `2px solid ${active ? '#7C3AED' : 'var(--ve-border, #E8E0FA)'}`,
+                    background: active ? 'rgba(124,58,237,0.06)' : 'var(--ve-surface, #FFFFFF)',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    boxShadow: active ? '0 4px 16px rgba(124,58,237,0.12)' : '0 1px 4px rgba(124,58,237,0.04)',
                   }}
                 >
                   <div>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: '#FFFFFF', marginBottom: 2 }}>{s.label}</p>
-                    <p style={{ fontSize: 12, color: '#A0A0A0' }}>{s.duration}</p>
+                    <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--ve-text, #1A0A2E)', marginBottom: 2 }}>{s.label}</p>
+                    <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)' }}>{s.duration}</p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: 18, fontWeight: 800, color: active ? '#22C55E' : '#FFFFFF' }}>₹{price.toLocaleString('en-IN')}</p>
-                    {key === 'trial' && <p style={{ fontSize: 10, color: '#A0A0A0' }}>logistics fee</p>}
+                    <p style={{ fontSize: 18, fontWeight: 800, color: active ? 'var(--ve-purple, #7C3AED)' : 'var(--ve-text, #1A0A2E)' }}>₹{price.toLocaleString('en-IN')}</p>
+                    {key === 'trial' && <p style={{ fontSize: 10, color: 'var(--ve-text-3, #9B8EC4)' }}>logistics fee</p>}
                   </div>
                 </div>
               );
@@ -169,7 +170,7 @@ export default function BookingPage({ params }: PageProps) {
       {/* Step 2: Duration */}
       {step === 2 && (
         <div className="animate-fade-in-up">
-          <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 16 }}>How long would you like to train?</p>
+          <p style={{ fontSize: 13, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 16 }}>How long would you like to train?</p>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 24 }}>
             {serviceOptions.map((s) => {
               const price = s.price(coach.price);
@@ -181,27 +182,28 @@ export default function BookingPage({ params }: PageProps) {
                   style={{
                     padding: '14px 18px',
                     borderRadius: 14,
-                    border: `2px solid ${active ? '#22C55E' : '#2E2E2E'}`,
-                    background: active ? 'rgba(34,197,94,0.1)' : '#1A1A1A',
+                    border: `2px solid ${active ? '#7C3AED' : 'var(--ve-border, #E8E0FA)'}`,
+                    background: active ? 'rgba(124,58,237,0.06)' : 'var(--ve-surface, #FFFFFF)',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
+                    boxShadow: active ? '0 4px 16px rgba(124,58,237,0.12)' : '0 1px 4px rgba(124,58,237,0.04)',
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-                    <div style={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${active ? '#22C55E' : '#2E2E2E'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                      {active && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#22C55E' }} />}
+                    <div style={{ width: 18, height: 18, borderRadius: '50%', border: `2px solid ${active ? '#7C3AED' : 'var(--ve-border, #E8E0FA)'}`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {active && <div style={{ width: 8, height: 8, borderRadius: '50%', background: '#7C3AED' }} />}
                     </div>
                     <div>
-                      <p style={{ fontSize: 13, fontWeight: 600, color: '#FFFFFF' }}>{s.label}</p>
-                      <p style={{ fontSize: 11, color: '#A0A0A0' }}>{s.duration}</p>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: 'var(--ve-text, #1A0A2E)' }}>{s.label}</p>
+                      <p style={{ fontSize: 11, color: 'var(--ve-text-3, #9B8EC4)' }}>{s.duration}</p>
                     </div>
                   </div>
                   <div style={{ textAlign: 'right' }}>
-                    <p style={{ fontSize: 16, fontWeight: 800, color: active ? '#22C55E' : '#FFFFFF' }}>₹{price.toLocaleString('en-IN')}</p>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: active ? 'var(--ve-purple, #7C3AED)' : 'var(--ve-text, #1A0A2E)' }}>₹{price.toLocaleString('en-IN')}</p>
                     {s.savings && (
-                      <span style={{ fontSize: 10, fontWeight: 700, color: '#F5C518', background: 'rgba(245,197,24,0.15)', padding: '1px 6px', borderRadius: 6 }}>{s.savings}</span>
+                      <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--ve-purple, #7C3AED)', background: 'rgba(124,58,237,0.1)', padding: '1px 6px', borderRadius: 6 }}>{s.savings}</span>
                     )}
                   </div>
                 </div>
@@ -217,10 +219,10 @@ export default function BookingPage({ params }: PageProps) {
       {/* Step 3: Address */}
       {step === 3 && (
         <div className="animate-fade-in-up">
-          <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <p style={{ fontSize: 13, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
             <MapPin size={14} /> Your session address
           </p>
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 16, padding: '20px', display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
+          <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 16, padding: '20px', display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24, boxShadow: '0 2px 12px rgba(124,58,237,0.06)' }}>
             {[
               { key: 'house', label: 'House / Flat No.', placeholder: 'Flat 402, Block B' },
               { key: 'street', label: 'Street / Locality', placeholder: 'Andheri West' },
@@ -229,7 +231,7 @@ export default function BookingPage({ params }: PageProps) {
               { key: 'pincode', label: 'Pincode', placeholder: '400053' },
             ].map((field) => (
               <div key={field.key}>
-                <label style={{ fontSize: 12, color: '#A0A0A0', display: 'block', marginBottom: 6 }}>{field.label}</label>
+                <label style={{ fontSize: 12, color: 'var(--ve-text-2, #5B4A8A)', display: 'block', marginBottom: 6 }}>{field.label}</label>
                 <input
                   className="input-field"
                   placeholder={field.placeholder}
@@ -248,7 +250,7 @@ export default function BookingPage({ params }: PageProps) {
       {/* Step 4: Time slot */}
       {step === 4 && (
         <div className="animate-fade-in-up">
-          <p style={{ fontSize: 13, color: '#A0A0A0', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <p style={{ fontSize: 13, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 6 }}>
             <Clock size={14} /> Choose your preferred session time
           </p>
           <div style={{ display: 'flex', gap: 8, overflowX: 'auto', paddingBottom: 8, marginBottom: 16 }}>
@@ -260,13 +262,14 @@ export default function BookingPage({ params }: PageProps) {
                   flexShrink: 0,
                   padding: '10px 14px',
                   borderRadius: 12,
-                  border: `1.5px solid ${booking.selectedDate === d.date ? '#22C55E' : '#2E2E2E'}`,
-                  background: booking.selectedDate === d.date ? 'rgba(34,197,94,0.15)' : '#1A1A1A',
-                  color: booking.selectedDate === d.date ? '#22C55E' : '#A0A0A0',
+                  border: `1.5px solid ${booking.selectedDate === d.date ? '#7C3AED' : 'var(--ve-border, #E8E0FA)'}`,
+                  background: booking.selectedDate === d.date ? 'rgba(124,58,237,0.08)' : 'var(--ve-surface, #FFFFFF)',
+                  color: booking.selectedDate === d.date ? 'var(--ve-purple, #7C3AED)' : 'var(--ve-text-3, #9B8EC4)',
                   fontSize: 12,
                   fontWeight: booking.selectedDate === d.date ? 700 : 400,
                   cursor: 'pointer',
                   whiteSpace: 'nowrap',
+                  boxShadow: booking.selectedDate === d.date ? '0 2px 10px rgba(124,58,237,0.12)' : 'none',
                 }}
               >
                 {d.label}
@@ -281,12 +284,13 @@ export default function BookingPage({ params }: PageProps) {
                 style={{
                   padding: '12px 8px',
                   borderRadius: 10,
-                  border: `1.5px solid ${booking.selectedTime === time ? '#22C55E' : '#2E2E2E'}`,
-                  background: booking.selectedTime === time ? 'rgba(34,197,94,0.15)' : '#1A1A1A',
-                  color: booking.selectedTime === time ? '#22C55E' : '#E0E0E0',
+                  border: `1.5px solid ${booking.selectedTime === time ? '#7C3AED' : 'var(--ve-border, #E8E0FA)'}`,
+                  background: booking.selectedTime === time ? 'rgba(124,58,237,0.08)' : 'var(--ve-surface, #FFFFFF)',
+                  color: booking.selectedTime === time ? 'var(--ve-purple, #7C3AED)' : 'var(--ve-text-2, #5B4A8A)',
                   fontSize: 12,
                   fontWeight: booking.selectedTime === time ? 700 : 400,
                   cursor: 'pointer',
+                  boxShadow: booking.selectedTime === time ? '0 2px 8px rgba(124,58,237,0.12)' : 'none',
                 }}
               >
                 {time}
@@ -307,8 +311,8 @@ export default function BookingPage({ params }: PageProps) {
       {/* Step 5: Review */}
       {step === 5 && (
         <div className="animate-fade-in-up">
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 16, padding: '20px', marginBottom: 16 }}>
-            <p style={{ fontSize: 12, color: '#A0A0A0', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 16, fontWeight: 700 }}>Booking Summary</p>
+          <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 16, padding: '20px', marginBottom: 16, boxShadow: '0 2px 12px rgba(124,58,237,0.07)' }}>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 16, fontWeight: 700 }}>Booking Summary</p>
             {[
               { label: 'Coach', value: coach.name },
               { label: 'Category', value: coach.category.charAt(0).toUpperCase() + coach.category.slice(1) },
@@ -318,14 +322,14 @@ export default function BookingPage({ params }: PageProps) {
               { label: 'Time', value: booking.selectedTime || '—' },
               { label: 'Address', value: `${booking.address.house}, ${booking.address.street}, ${booking.address.city}` },
             ].map((row) => (
-              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid #2E2E2E' }}>
-                <span style={{ fontSize: 13, color: '#A0A0A0' }}>{row.label}</span>
-                <span style={{ fontSize: 13, color: '#FFFFFF', fontWeight: 600, textAlign: 'right', maxWidth: '60%' }}>{row.value}</span>
+              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', borderBottom: '1px solid var(--ve-border, #E8E0FA)' }}>
+                <span style={{ fontSize: 13, color: 'var(--ve-text-3, #9B8EC4)' }}>{row.label}</span>
+                <span style={{ fontSize: 13, color: 'var(--ve-text, #1A0A2E)', fontWeight: 600, textAlign: 'right', maxWidth: '60%' }}>{row.value}</span>
               </div>
             ))}
             <div style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 0 0' }}>
-              <span style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF' }}>Total</span>
-              <span style={{ fontSize: 20, fontWeight: 900, color: '#22C55E' }}>₹{finalPrice.toLocaleString('en-IN')}</span>
+              <span style={{ fontSize: 15, fontWeight: 700, color: 'var(--ve-text, #1A0A2E)' }}>Total</span>
+              <span style={{ fontSize: 20, fontWeight: 900, color: 'var(--ve-purple, #7C3AED)' }}>₹{finalPrice.toLocaleString('en-IN')}</span>
             </div>
           </div>
           <button onClick={() => setStep(6)} className="btn-primary" style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
@@ -337,14 +341,14 @@ export default function BookingPage({ params }: PageProps) {
       {/* Step 6: Payment */}
       {step === 6 && (
         <div className="animate-fade-in-up">
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 16, padding: '20px', marginBottom: 20 }}>
+          <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 16, padding: '20px', marginBottom: 20, boxShadow: '0 2px 12px rgba(124,58,237,0.07)' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
-              <span style={{ fontSize: 14, color: '#A0A0A0' }}>Amount to pay</span>
-              <span style={{ fontSize: 24, fontWeight: 900, color: '#22C55E' }}>₹{finalPrice.toLocaleString('en-IN')}</span>
+              <span style={{ fontSize: 14, color: 'var(--ve-text-3, #9B8EC4)' }}>Amount to pay</span>
+              <span style={{ fontSize: 24, fontWeight: 900, color: 'var(--ve-purple, #7C3AED)' }}>₹{finalPrice.toLocaleString('en-IN')}</span>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#242424', borderRadius: 10, padding: '10px 14px' }}>
-              <CreditCard size={14} color="#A0A0A0" />
-              <span style={{ fontSize: 12, color: '#A0A0A0' }}>Secure payment powered by Razorpay</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--ve-surface-2, #F3F0FF)', borderRadius: 10, padding: '10px 14px', border: '1px solid var(--ve-border, #E8E0FA)' }}>
+              <CreditCard size={14} color="var(--ve-text-3, #9B8EC4)" />
+              <span style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)' }}>Secure payment powered by Razorpay</span>
             </div>
           </div>
           <button
@@ -353,7 +357,7 @@ export default function BookingPage({ params }: PageProps) {
               width: '100%',
               height: 56,
               borderRadius: 14,
-              background: 'linear-gradient(135deg, #1A3FFF, #3060FF)',
+              background: 'linear-gradient(135deg, #7C3AED, #A855F7, #EC4899)',
               border: 'none',
               cursor: 'pointer',
               fontSize: 16,
@@ -363,6 +367,7 @@ export default function BookingPage({ params }: PageProps) {
               alignItems: 'center',
               justifyContent: 'center',
               gap: 10,
+              boxShadow: '0 4px 20px rgba(124,58,237,0.30)',
             }}
           >
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
@@ -381,23 +386,22 @@ export default function BookingPage({ params }: PageProps) {
               width: 80,
               height: 80,
               borderRadius: '50%',
-              background: 'rgba(34,197,94,0.15)',
-              border: '2px solid rgba(34,197,94,0.4)',
+              background: 'rgba(124,58,237,0.10)',
+              border: '2px solid rgba(124,58,237,0.3)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               margin: '0 auto 20px',
-              animation: 'pulse-green 2s ease-in-out infinite',
             }}
           >
-            <Check size={36} color="#22C55E" strokeWidth={3} />
+            <Check size={36} color="#7C3AED" strokeWidth={3} />
           </div>
-          <h2 style={{ fontSize: 26, fontWeight: 900, color: '#FFFFFF', marginBottom: 8 }}>Booking Confirmed!</h2>
-          <p style={{ fontSize: 15, color: '#A0A0A0', marginBottom: 28 }}>
+          <h2 style={{ fontSize: 26, fontWeight: 900, color: 'var(--ve-text, #1A0A2E)', marginBottom: 8 }}>Booking Confirmed!</h2>
+          <p style={{ fontSize: 15, color: 'var(--ve-text-3, #9B8EC4)', marginBottom: 28 }}>
             Your session with {coach.name} has been booked. You&apos;ll receive a confirmation on WhatsApp.
           </p>
-          <div style={{ background: '#1A1A1A', border: '1px solid #2E2E2E', borderRadius: 16, padding: '20px', marginBottom: 24, textAlign: 'left' }}>
-            <p style={{ fontSize: 12, color: '#A0A0A0', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12, fontWeight: 700 }}>Booking Details</p>
+          <div style={{ background: 'var(--ve-surface, #FFFFFF)', border: '1px solid var(--ve-border, #E8E0FA)', borderRadius: 16, padding: '20px', marginBottom: 24, textAlign: 'left', boxShadow: '0 2px 12px rgba(124,58,237,0.07)' }}>
+            <p style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: 12, fontWeight: 700 }}>Booking Details</p>
             {[
               { label: 'Booking ID', value: `#VE${Date.now().toString().slice(-6)}` },
               { label: 'Coach', value: coach.name },
@@ -405,9 +409,9 @@ export default function BookingPage({ params }: PageProps) {
               { label: 'Date & Time', value: `${booking.selectedDate} at ${booking.selectedTime}` },
               { label: 'Amount Paid', value: `₹${finalPrice.toLocaleString('en-IN')}` },
             ].map((row) => (
-              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #2E2E2E' }}>
-                <span style={{ fontSize: 12, color: '#A0A0A0' }}>{row.label}</span>
-                <span style={{ fontSize: 12, color: '#FFFFFF', fontWeight: 600 }}>{row.value}</span>
+              <div key={row.label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid var(--ve-border, #E8E0FA)' }}>
+                <span style={{ fontSize: 12, color: 'var(--ve-text-3, #9B8EC4)' }}>{row.label}</span>
+                <span style={{ fontSize: 12, color: 'var(--ve-text, #1A0A2E)', fontWeight: 600 }}>{row.value}</span>
               </div>
             ))}
           </div>

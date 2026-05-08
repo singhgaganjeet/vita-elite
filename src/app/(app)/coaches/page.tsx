@@ -9,9 +9,9 @@ import { coaches, CoachCategory } from '@/data/coaches';
 type SortKey = 'rating' | 'experience' | 'priceLow' | 'priceHigh';
 
 const categoryMeta: Record<string, { label: string; color: string }> = {
-  fitness: { label: 'Fitness', color: '#22C55E' },
-  diet: { label: 'Diet', color: '#F5C518' },
-  physio: { label: 'Physiotherapy', color: '#3B82F6' },
+  fitness: { label: 'Fitness', color: '#7C3AED' },
+  diet: { label: 'Diet', color: '#F59E0B' },
+  physio: { label: 'Physiotherapy', color: '#8B5CF6' },
 };
 
 export default function CoachesPage() {
@@ -53,14 +53,19 @@ export default function CoachesPage() {
 
   return (
     <div style={{ padding: '24px 20px', maxWidth: 1000, margin: '0 auto' }}>
-      <h1 style={{ fontSize: 24, fontWeight: 800, color: '#FFFFFF', marginBottom: 4 }}>Find a Coach</h1>
-      <p style={{ fontSize: 14, color: '#A0A0A0', marginBottom: 24 }}>
+      <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--ve-text)', marginBottom: 4 }}>Find a Coach</h1>
+      <p style={{ fontSize: 14, color: 'var(--ve-text-3)', marginBottom: 24 }}>
         {coaches.length} verified experts ready to come to you
       </p>
 
       {/* Category tabs */}
       <div style={{ display: 'flex', gap: 8, marginBottom: 16, overflowX: 'auto', paddingBottom: 4 }}>
-        {([['all', 'All', '#FFFFFF'], ['fitness', 'Fitness', '#22C55E'], ['diet', 'Diet', '#F5C518'], ['physio', 'Physiotherapy', '#3B82F6']] as const).map(([key, label, color]) => (
+        {([
+          ['all', 'All', 'var(--ve-purple)'],
+          ['fitness', 'Fitness', 'var(--ve-purple)'],
+          ['diet', 'Diet', '#F59E0B'],
+          ['physio', 'Physiotherapy', 'var(--ve-violet)'],
+        ] as const).map(([key, label, color]) => (
           <button
             key={key}
             onClick={() => setCategory(key)}
@@ -68,14 +73,17 @@ export default function CoachesPage() {
               flexShrink: 0,
               padding: '8px 16px',
               borderRadius: 20,
-              border: `1.5px solid ${category === key ? color : '#2E2E2E'}`,
-              background: category === key ? `${color}18` : '#1A1A1A',
-              color: category === key ? color : '#A0A0A0',
+              border: `1.5px solid ${category === key ? color : 'var(--ve-border)'}`,
+              background: category === key
+                ? 'linear-gradient(135deg, #7C3AED 0%, #A855F7 50%, #EC4899 100%)'
+                : 'var(--ve-surface)',
+              color: category === key ? '#FFFFFF' : 'var(--ve-text-3)',
               fontSize: 13,
               fontWeight: category === key ? 700 : 400,
               cursor: 'pointer',
               whiteSpace: 'nowrap',
               transition: 'all 0.15s',
+              boxShadow: category === key ? '0 4px 24px rgba(124,58,237,0.10)' : 'none',
             }}
           >
             {label} <span style={{ opacity: 0.7 }}>({counts[key]})</span>
@@ -86,7 +94,7 @@ export default function CoachesPage() {
       {/* Search + Sort + Filter row */}
       <div style={{ display: 'flex', gap: 10, marginBottom: 20, flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-          <Search size={15} color="#A0A0A0" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
+          <Search size={15} color="var(--ve-text-3)" style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)' }} />
           <input
             className="input-field"
             placeholder="Search name, specialisation, city..."
@@ -112,33 +120,35 @@ export default function CoachesPage() {
             height: 48,
             padding: '0 16px',
             borderRadius: 10,
-            background: showFilters ? 'rgba(34,197,94,0.15)' : '#242424',
-            border: `1px solid ${showFilters ? 'rgba(34,197,94,0.4)' : '#2E2E2E'}`,
-            color: showFilters ? '#22C55E' : '#A0A0A0',
+            background: showFilters ? 'rgba(124,58,237,0.08)' : 'var(--ve-surface)',
+            border: `1px solid ${showFilters ? 'rgba(124,58,237,0.35)' : 'var(--ve-border)'}`,
+            color: showFilters ? 'var(--ve-purple)' : 'var(--ve-text-3)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             gap: 6,
             fontSize: 13,
             fontWeight: 500,
+            boxShadow: '0 4px 24px rgba(124,58,237,0.10)',
           }}
         >
           <Filter size={14} /> Filters
         </button>
       </div>
 
-      {/* Filter sidebar / panel */}
+      {/* Filter panel */}
       {showFilters && (
         <div
           style={{
-            background: '#1A1A1A',
-            border: '1px solid #2E2E2E',
+            background: 'var(--ve-surface)',
+            border: '1px solid var(--ve-border)',
             borderRadius: 16,
             padding: '20px',
             marginBottom: 20,
+            boxShadow: '0 4px 24px rgba(124,58,237,0.10)',
           }}
         >
-          <p style={{ fontSize: 12, color: '#A0A0A0', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>
+          <p style={{ fontSize: 12, color: 'var(--ve-text-3)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 600 }}>
             Gender
           </p>
           <div style={{ display: 'flex', gap: 8 }}>
@@ -149,9 +159,9 @@ export default function CoachesPage() {
                 style={{
                   padding: '6px 14px',
                   borderRadius: 20,
-                  border: `1px solid ${genderFilter === g ? '#22C55E' : '#2E2E2E'}`,
-                  background: genderFilter === g ? 'rgba(34,197,94,0.15)' : '#242424',
-                  color: genderFilter === g ? '#22C55E' : '#A0A0A0',
+                  border: `1px solid ${genderFilter === g ? 'var(--ve-purple)' : 'var(--ve-border)'}`,
+                  background: genderFilter === g ? 'rgba(124,58,237,0.10)' : 'var(--ve-bg)',
+                  color: genderFilter === g ? 'var(--ve-purple)' : 'var(--ve-text-3)',
                   fontSize: 12,
                   fontWeight: genderFilter === g ? 600 : 400,
                   cursor: 'pointer',
@@ -166,7 +176,7 @@ export default function CoachesPage() {
       )}
 
       {/* Results count */}
-      <p style={{ fontSize: 12, color: '#A0A0A0', marginBottom: 16 }}>
+      <p style={{ fontSize: 12, color: 'var(--ve-text-3)', marginBottom: 16 }}>
         Showing {filtered.length} coach{filtered.length !== 1 ? 'es' : ''}
       </p>
 
@@ -184,30 +194,32 @@ export default function CoachesPage() {
             <div
               key={coach.id}
               style={{
-                background: '#1A1A1A',
-                border: '1px solid #2E2E2E',
+                background: 'var(--ve-surface)',
+                border: '1px solid var(--ve-border)',
                 borderRadius: 20,
                 padding: '20px',
                 display: 'flex',
                 flexDirection: 'column',
                 gap: 14,
-                transition: 'border-color 0.2s',
+                transition: 'border-color 0.2s, box-shadow 0.2s',
+                boxShadow: '0 4px 24px rgba(124,58,237,0.10)',
               }}
             >
               {/* Header */}
               <div style={{ display: 'flex', gap: 14, alignItems: 'flex-start' }}>
                 <CoachAvatar name={coach.name} category={coach.category} size={52} />
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: '#FFFFFF', marginBottom: 2 }}>{coach.name}</div>
-                  <div style={{ fontSize: 11, color: '#A0A0A0', marginBottom: 6, lineHeight: 1.4 }}>{coach.designation}</div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--ve-text)', marginBottom: 2 }}>{coach.name}</div>
+                  <div style={{ fontSize: 11, color: 'var(--ve-text-3)', marginBottom: 6, lineHeight: 1.4 }}>{coach.designation}</div>
                   <span
                     style={{
                       fontSize: 10,
                       fontWeight: 600,
                       padding: '2px 9px',
                       borderRadius: 10,
-                      background: `${meta.color}18`,
+                      background: `${meta.color}15`,
                       color: meta.color,
+                      border: `1px solid ${meta.color}30`,
                     }}
                   >
                     {meta.label}
@@ -218,11 +230,11 @@ export default function CoachesPage() {
               {/* Stats */}
               <div style={{ display: 'flex', gap: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                  <Star size={12} color="#F5C518" fill="#F5C518" />
-                  <span style={{ fontSize: 12, fontWeight: 700, color: '#FFFFFF' }}>{coach.rating}</span>
+                  <Star size={12} color="#F59E0B" fill="#F59E0B" />
+                  <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--ve-text)' }}>{coach.rating}</span>
                 </div>
-                <span style={{ fontSize: 12, color: '#A0A0A0' }}>{coach.sessions} sessions</span>
-                <span style={{ fontSize: 12, color: '#A0A0A0' }}>{coach.experience}yr exp</span>
+                <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{coach.sessions} sessions</span>
+                <span style={{ fontSize: 12, color: 'var(--ve-text-3)' }}>{coach.experience}yr exp</span>
               </div>
 
               {/* Specialisations */}
@@ -234,9 +246,9 @@ export default function CoachesPage() {
                       fontSize: 10,
                       padding: '3px 9px',
                       borderRadius: 8,
-                      background: '#242424',
-                      color: '#A0A0A0',
-                      border: '1px solid #2E2E2E',
+                      background: 'var(--ve-bg)',
+                      color: 'var(--ve-text-2)',
+                      border: '1px solid var(--ve-border)',
                     }}
                   >
                     {s}
@@ -247,11 +259,11 @@ export default function CoachesPage() {
               {/* Price + CTA */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'auto' }}>
                 <div>
-                  <span style={{ fontSize: 11, color: '#A0A0A0' }}>From </span>
-                  <span style={{ fontSize: 16, fontWeight: 800, color: '#FFFFFF' }}>
+                  <span style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>From </span>
+                  <span style={{ fontSize: 16, fontWeight: 800, color: 'var(--ve-text)' }}>
                     ₹{coach.price.toLocaleString('en-IN')}
                   </span>
-                  <span style={{ fontSize: 11, color: '#A0A0A0' }}>/mo</span>
+                  <span style={{ fontSize: 11, color: 'var(--ve-text-3)' }}>/mo</span>
                 </div>
                 <Link href={`/coaches/${coach.id}`} style={{ textDecoration: 'none' }}>
                   <button className="btn-secondary" style={{ height: 36, padding: '0 16px', fontSize: 12 }}>
@@ -265,9 +277,9 @@ export default function CoachesPage() {
       </div>
 
       {filtered.length === 0 && (
-        <div style={{ textAlign: 'center', padding: '60px 20px', color: '#A0A0A0' }}>
+        <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--ve-text-3)' }}>
           <Search size={40} style={{ marginBottom: 16, opacity: 0.3 }} />
-          <p style={{ fontSize: 16, fontWeight: 600, color: '#FFFFFF', marginBottom: 8 }}>No coaches found</p>
+          <p style={{ fontSize: 16, fontWeight: 600, color: 'var(--ve-text)', marginBottom: 8 }}>No coaches found</p>
           <p style={{ fontSize: 14 }}>Try adjusting your filters or search</p>
         </div>
       )}
